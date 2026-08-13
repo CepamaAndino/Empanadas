@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin · Empanadas Guayacán 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{ --azul:#0B2A5B; --rojo:#D52B1E; --verde:#1C8A4A; --crema:#FBF7EF; --linea:#E4DCC9; }
+  *{box-sizing:border-box;}
+  body{font-family:'Inter',sans-serif; background:var(--crema); margin:0; color:#1B1D22;}
+  header{background:var(--azul); color:#fff; padding:18px 20px; text-align:center;}
+  header h1{font-family:'Anton'; font-weight:400; font-size:22px; margin:0; letter-spacing:.02em;}
+  header p{margin:4px 0 0; font-size:12.5px; color:#B9CCF0;}
+  main{max-width:960px; margin:0 auto; padding:20px 16px 60px;}
+
+  .toolbar{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:16px; align-items:center;}
+  .toolbar select, .toolbar input{
+    padding:9px 12px; border-radius:8px; border:1.5px solid #DDD3BC; font-family:'Inter'; font-size:13.5px;
+  }
+  .toolbar button{
+    padding:9px 16px; border-radius:8px; border:none; background:var(--azul); color:#fff;
+    font-weight:700; font-size:13px; cursor:pointer;
+  }
+  .toolbar .stock-pill{
+    background:#fff; border:1.5px solid var(--linea); border-radius:999px; padding:7px 14px;
+    font-size:12.5px; font-weight:700; color:#555;
+  }
+
+  table{width:100%; border-collapse:collapse; background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 4px 16px rgba(11,42,91,0.08);}
+  thead th{
+    background:var(--azul); color:#fff; font-size:11.5px; text-transform:uppercase; letter-spacing:.04em;
+    padding:10px 8px; text-align:left;
+  }
+  tbody td{padding:9px 8px; font-size:13px; border-bottom:1px solid #F0EAD9; vertical-align:middle;}
+  tbody tr:hover{background:#FBF7EF;}
+
+  .badge{padding:4px 9px; border-radius:999px; font-size:11px; font-weight:800;}
+  .badge.Pendiente{background:#FFF1CC; color:#8A6100;}
+  .badge.Verificado{background:#DFF3E5; color:var(--verde);}
+  .badge.Rechazado{background:#FBE0DE; color:var(--rojo);}
+  .badge.Entregado{background:#DCE6F5; color:var(--azul);}
+
+  .actions{display:flex; flex-wrap:wrap; gap:4px;}
+  .actions button{
+    border:none; border-radius:6px; padding:6px 9px; font-size:11px; font-weight:700; cursor:pointer;
+  }
+  .btn-ok{background:var(--verde); color:#fff;}
+  .btn-no{background:var(--rojo); color:#fff;}
+  .btn-wsp{background:#25D366; color:#fff;}
+  .btn-entregado{background:var(--azul); color:#fff;}
+  .actions button:disabled{background:#ddd; color:#999; cursor:not-allowed;}
+
+  .empty{text-align:center; padding:40px; color:#999; font-size:14px;}
+  .loading{text-align:center; padding:40px; color:#999; font-size:14px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>PANEL ADMIN — EMPANADAS GUAYACÁN 2026</h1>
+  <p>Verificación de pagos · CEPAMA Colegio Andino Montessori</p>
+</header>
+
+<main>
+  <div class="toolbar">
+    <select id="filtroEstado">
+      <option value="">Todos los estados</option>
+      <option value="Pendiente">Pendiente</option>
+      <option value="Verificado">Verificado</option>
+      <option value="Entregado">Entregado</option>
+      <option value="Rechazado">Rechazado</option>
+    </select>
+    <input type="text" id="buscar" placeholder="Buscar por nombre, curso o código...">
+    <button id="btnRefrescar">🔄 Refrescar</button>
+    <button id="btnExportar">⬇️ Exportar reporte a Drive</button>
+    <span class="stock-pill" id="pillStock">Stock: -- pino / -- queso</span>
+  </div>
+
+  <div id="contenido" class="loading">Cargando pedidos...</div>
+</main>
+
+<script>
+const API_URL = "PEGA_AQUI_TU_URL_DE_APPS_SCRIPT_WEB_APP";
+
+let pedidos = [];
+
+async function cargar(){
+  document.getElementById("contenido").innerHTML = '<div class="loading">Cargando pedidos...</div>';
+  try{
+    const [resPedidos, resStock] = await Promise.all([
+      fetch(API_URL + "?action=listar").then(r => r.json()),
+      fetch(API_URL + "?action=stock").then(r => r.json())
+    ]);
+    pedidos = resPedidos.pedidos || [];
+    if(resStock.ok){
+      document.getElementById("pillStock").textContent = `Stock: ${resStock.stock_pino} pino / ${resStock.stock_queso} queso`;
+    }
+    render();
+  }catch(e){
+    document.getElementById("contenido").innerHTML = '<div class="empty">No se pudo conectar con el backend. Revisa la URL de Apps Script.</div>';
+  }
+}
+
+function render(){
+  const filtroEstado = document.getElementById("filtroEstado").value;
+  const buscar = document.getElementById("buscar").value.toLowerCase();
+
+  let filtrados = pedidos.filter(p => {
+    if(filtroEstado && p.estado !== filtroEstado) return false;
+    if(buscar){
+      const texto = (p.nombre + " " + p.curso + " " + p.codigo).toLowerCase();
+      if(!texto.includes(buscar)) return false;
+    }
+    return true;
+  });
+
+  filtrados.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+
+  if(filtrados.length === 0){
+    document.getElementById("contenido").innerHTML = '<div class="empty">No hay pedidos que coincidan.</div>';
+    return;
+  }
+
+  let html = `<table><thead><tr>
+    <th>Código</th><th>Etapa</th><th>Alumno</th><th>Curso</th><th>WhatsApp</th>
+    <th>Pino</th><th>Queso</th><th>Total</th><th>Estado</th><th>Acciones</th>
+  </tr></thead><tbody>`;
+
+  filtrados.forEach(p => {
+    html += `<tr>
+      <td><strong>${p.codigo}</strong></td>
+      <td>${p.etapa || "-"}</td>
+      <td>${p.nombre}</td>
+      <td>${p.curso}</td>
+      <td>${p.whatsapp}</td>
+      <td>${p.cantidad_pino}</td>
+      <td>${p.cantidad_queso}</td>
+      <td>$${Number(p.total).toLocaleString("es-CL")}</td>
+      <td><span class="badge ${p.estado}">${p.estado}</span></td>
+      <td class="actions">${botonesPorEstado(p)}</td>
+    </tr>`;
+  });
+
+  html += "</tbody></table>";
+  document.getElementById("contenido").innerHTML = html;
+
+  document.querySelectorAll("button[data-accion]").forEach(btn => {
+    btn.onclick = () => accionar(btn.dataset.codigo, btn.dataset.accion, btn);
+  });
+  document.querySelectorAll("button[data-wsp]").forEach(btn => {
+    btn.onclick = () => enviarWhatsapp(btn.dataset.wsp, btn.dataset.codigo);
+  });
+}
+
+function botonesPorEstado(p){
+  if(p.estado === "Pendiente"){
+    return `
+      <button class="btn-ok" data-codigo="${p.codigo}" data-accion="verificar">Verificar</button>
+      <button class="btn-no" data-codigo="${p.codigo}" data-accion="rechazar">Rechazar</button>
+      <button class="btn-wsp" data-wsp="comprobante" data-codigo="${p.codigo}">📲 Comprobante</button>
+    `;
+  }
+  if(p.estado === "Verificado"){
+    return `
+      <button class="btn-wsp" data-wsp="aprobacion" data-codigo="${p.codigo}">📲 Aprobación</button>
+      <button class="btn-entregado" data-codigo="${p.codigo}" data-accion="entregar">✅ Entregado</button>
+    `;
+  }
+  return `<span style="color:#aaa;font-size:11.5px;">—</span>`;
+}
+
+function limpiarNumero(numero){
+  return String(numero).replace(/[^\d]/g, "").replace(/^0+/, "");
+}
+
+function enviarWhatsapp(tipo, codigo){
+  const p = pedidos.find(x => x.codigo === codigo);
+  if(!p) return;
+  const numero = limpiarNumero(p.whatsapp);
+  let texto = "";
+
+  if(tipo === "comprobante"){
+    texto = `Hola! 👋 Este es tu comprobante de pedido de Empanadas Guayacán 2026.%0A%0ACódigo: ${p.codigo}%0AAlumno/a: ${p.nombre}%0ACurso: ${p.curso}%0APino: ${p.cantidad_pino} · Queso: ${p.cantidad_queso}%0ATotal: $${Number(p.total).toLocaleString("es-CL")}%0A%0ATransfiere a Banco de Chile, Cuenta Vista 00-075-84210-95, a nombre de Patricia Bravo, usando tu código ${p.codigo} como glosa.%0A%0AApenas verifiquemos tu pago te avisamos para que retires en el stand. ¡Gracias por tu compra!`;
+  } else {
+    texto = `¡Hola! ✅ Tu pago del pedido ${p.codigo} fue verificado.%0A%0APasa a retirar tus empanadas (Pino: ${p.cantidad_pino} · Queso: ${p.cantidad_queso}) en el stand de Guayacán, mostrando tu código: ${p.codigo}.%0A%0A¡Gracias por apoyar a CEPAMA!`;
+  }
+
+  window.open(`https://wa.me/${numero}?text=${texto}`, "_blank");
+}
+
+async function accionar(codigo, accion, btnEl){
+  const mensajes = {
+    verificar: `¿Confirmas que verificaste la transferencia del pedido ${codigo}? Se enviará el comprobante por correo.`,
+    rechazar: `¿Rechazar el pedido ${codigo}? Se restaurará el stock reservado.`,
+    entregar: `¿Confirmas que ya entregaste las empanadas del pedido ${codigo} en el stand?`
+  };
+  if(!confirm(mensajes[accion])) return;
+
+  btnEl.disabled = true;
+  btnEl.textContent = "...";
+
+  const mapaAccion = { verificar: "verificar_pago", rechazar: "rechazar_pago", entregar: "marcar_entregado" };
+  try{
+    const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: mapaAccion[accion], codigo }) });
+    const data = await res.json();
+    if(!data.ok){
+      alert(data.mensaje || "Ocurrió un error.");
+    }
+    await cargar();
+  }catch(e){
+    alert("Error de conexión.");
+    await cargar();
+  }
+}
+
+document.getElementById("btnRefrescar").onclick = cargar;
+document.getElementById("filtroEstado").onchange = render;
+document.getElementById("buscar").oninput = render;
+
+document.getElementById("btnExportar").onclick = async () => {
+  const btn = document.getElementById("btnExportar");
+  btn.disabled = true;
+  btn.textContent = "Exportando...";
+  try{
+    const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "exportar_reporte" }) });
+    const data = await res.json();
+    if(data.ok){
+      window.open(data.url, "_blank");
+    } else {
+      alert("No se pudo exportar el reporte.");
+    }
+  }catch(e){
+    alert("Error de conexión al exportar.");
+  }
+  btn.disabled = false;
+  btn.textContent = "⬇️ Exportar reporte a Drive";
+};
+
+cargar();
+</script>
+</body>
+</html>

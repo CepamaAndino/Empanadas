@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Venta de Empanadas Guayacán 2026 — Colegio Andino Montessori</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --azul:#0B2A5B;
+    --azul-2:#13398A;
+    --rojo:#D52B1E;
+    --blanco:#FFFFFF;
+    --pino:#8A5A2C;
+    --pino-bg:#F4E7D6;
+    --queso:#E4A421;
+    --queso-bg:#FEF3D9;
+    --crema:#FBF7EF;
+    --tinta:#1B1D22;
+    --linea:#E4DCC9;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--crema);
+    color:var(--tinta);
+  }
+  .hero{
+    position:relative;
+    background:radial-gradient(120% 160% at 20% -10%, var(--azul-2) 0%, var(--azul) 55%, #071c40 100%);
+    color:#fff;
+    padding:36px 20px 64px;
+    overflow:hidden;
+    text-align:center;
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      repeating-linear-gradient(135deg, rgba(255,255,255,0.035) 0 2px, transparent 2px 26px);
+    pointer-events:none;
+  }
+  .flag-strip{
+    display:flex; height:6px; width:100%; position:absolute; top:0; left:0;
+  }
+  .flag-strip span{flex:1;}
+  .flag-strip span:nth-child(1){background:var(--blanco);}
+  .flag-strip span:nth-child(2){background:var(--rojo);}
+  .flag-strip span:nth-child(3){background:var(--azul-2);}
+  .logo-wrap{
+    width:96px;height:96px;border-radius:50%;
+    background:#0B2A5B; border:3px solid rgba(255,255,255,0.55);
+    margin:14px auto 6px; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 8px 24px rgba(0,0,0,0.35);
+  }
+  .logo-wrap img{width:135%; height:135%; object-fit:cover;}
+  .eyebrow{
+    font-size:12px; letter-spacing:.22em; text-transform:uppercase;
+    color:#FFD9D5; font-weight:700; margin-bottom:8px;
+  }
+  h1.stamp{
+    font-family:'Anton',sans-serif;
+    font-weight:400;
+    font-size:clamp(38px,9vw,64px);
+    letter-spacing:.03em;
+    line-height:.95;
+    margin:6px 0 2px;
+    text-transform:uppercase;
+    color:#fff;
+    text-shadow:0 3px 0 rgba(0,0,0,0.18);
+  }
+  .accent-script{
+    font-family:'Caveat',cursive;
+    font-size:clamp(26px,6vw,40px);
+    color:#F6C453;
+    font-weight:700;
+    margin:0 0 4px;
+    transform:rotate(-2deg);
+    display:inline-block;
+  }
+  .sub{
+    max-width:520px; margin:10px auto 0; font-size:14.5px; color:#CFE0FF; line-height:1.5;
+  }
+  .stage-toggle{
+    display:inline-flex; margin-top:22px; background:rgba(255,255,255,0.1);
+    border:1px solid rgba(255,255,255,0.25); border-radius:999px; padding:4px;
+  }
+  .stage-toggle button{
+    border:none; background:transparent; color:#DCE6FF; font-family:'Inter';
+    font-weight:700; font-size:13px; padding:9px 18px; border-radius:999px; cursor:pointer;
+    transition:.2s;
+  }
+  .stage-toggle button.active{background:#fff; color:var(--azul);}
+
+  main{max-width:640px; margin:-34px auto 0; padding:0 16px 40px; position:relative; z-index:2;}
+
+  .card{
+    background:#fff; border-radius:18px; box-shadow:0 10px 30px rgba(11,42,91,0.12);
+    padding:20px; margin-bottom:16px; border:1px solid #EEE7D6;
+  }
+
+  .prod{
+    display:flex; align-items:center; gap:14px; padding:14px;
+    border-radius:14px; margin-bottom:12px; position:relative; overflow:hidden;
+  }
+  .prod.pino{background:var(--pino-bg); border:1px solid #E3CDA8;}
+  .prod.queso{background:var(--queso-bg); border:1px solid #F0D98A;}
+  .prod .icon{
+    width:52px; height:52px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; font-size:26px;
+    box-shadow:inset 0 0 0 2px rgba(255,255,255,0.6);
+  }
+  .prod.pino .icon{background:var(--pino); }
+  .prod.queso .icon{background:var(--queso);}
+  .prod .info{flex:1; min-width:0;}
+  .prod .info .name{font-weight:800; font-size:15.5px;}
+  .prod .info .price{font-size:12.5px; color:#6b5a3f; font-weight:600;}
+  .prod .stockbar{
+    height:5px; border-radius:3px; background:rgba(0,0,0,0.08); margin-top:6px; overflow:hidden;
+  }
+  .prod .stockbar i{display:block; height:100%; border-radius:3px;}
+  .prod.pino .stockbar i{background:var(--pino);}
+  .prod.queso .stockbar i{background:var(--queso);}
+  .prod .stocktxt{font-size:11px; color:#7a6a4d; margin-top:3px; font-weight:600;}
+
+  .stepper{display:flex; align-items:center; gap:8px; flex-shrink:0;}
+  .stepper button{
+    width:32px; height:32px; border-radius:50%; border:none; cursor:pointer;
+    font-size:18px; font-weight:800; color:#fff; background:var(--azul);
+    display:flex; align-items:center; justify-content:center; line-height:1;
+  }
+  .stepper button:disabled{background:#C9C9C9; cursor:not-allowed;}
+  .stepper .qty{width:26px; text-align:center; font-weight:800; font-size:16px;}
+
+  .promo-banner{
+    background:linear-gradient(90deg, var(--rojo), #b5211a);
+    color:#fff; border-radius:12px; padding:10px 14px; font-size:13px; font-weight:700;
+    text-align:center; margin-bottom:14px;
+    box-shadow:0 6px 16px rgba(213,43,30,0.25);
+  }
+
+  .totals{
+    display:flex; justify-content:space-between; align-items:baseline; padding-top:10px;
+    border-top:2px dashed var(--linea); margin-top:6px;
+  }
+  .totals .label{font-size:13px; color:#666; font-weight:600;}
+  .totals .amount{font-family:'Anton'; font-size:30px; color:var(--azul);}
+  .totals .save{font-size:11.5px; color:var(--rojo); font-weight:700; display:block; text-align:right;}
+
+  label{display:block; font-size:12.5px; font-weight:700; color:#3a3a3a; margin:12px 0 5px;}
+  input, select{
+    width:100%; padding:11px 12px; border-radius:10px; border:1.5px solid #DDD3BC;
+    font-family:'Inter'; font-size:14.5px; background:#fff;
+  }
+  input:focus, select:focus{outline:2px solid var(--azul-2); border-color:var(--azul-2);}
+  .hint{font-size:11px; color:#888; margin-top:3px;}
+
+  .btn-main{
+    width:100%; margin-top:20px; padding:15px; border:none; border-radius:12px;
+    background:linear-gradient(90deg, var(--rojo), #b5211a); color:#fff;
+    font-family:'Inter'; font-weight:800; font-size:15.5px; cursor:pointer;
+    box-shadow:0 8px 20px rgba(213,43,30,0.3);
+  }
+  .btn-main:disabled{background:#C9C9C9; box-shadow:none; cursor:not-allowed;}
+  .btn-main:active{transform:translateY(1px);}
+
+  /* Confirmation panel */
+  .order-code{
+    text-align:center; font-family:'Anton'; letter-spacing:.05em;
+    font-size:26px; color:var(--azul); background:#EEF2FF; border-radius:12px;
+    padding:14px; margin:10px 0 16px; border:2px dashed var(--azul-2);
+  }
+  .bank-box{
+    background:var(--azul); color:#fff; border-radius:14px; padding:16px; margin-bottom:14px;
+  }
+  .bank-box h3{margin:0 0 10px; font-size:14px; letter-spacing:.05em; text-transform:uppercase; color:#F6C453;}
+  .bank-row{display:flex; justify-content:space-between; font-size:13.5px; padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.12);}
+  .bank-row span:first-child{color:#B9CCF0;}
+  .bank-row span:last-child{font-weight:700;}
+
+  .btn-secondary{
+    width:100%; padding:14px; border-radius:12px; border:2px solid var(--azul);
+    background:#fff; color:var(--azul); font-weight:800; font-size:14.5px; margin-top:8px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .btn-wsp{border-color:#25D366; color:#128C3B;}
+
+  .status-msg{font-size:13px; text-align:center; padding:10px; border-radius:10px; margin-top:10px;}
+  .status-msg.pending{background:#FFF6E0; color:#8A6100;}
+  .status-msg.error{background:#FDE8E7; color:var(--rojo);}
+
+  footer{text-align:center; font-size:11.5px; color:#9a9a9a; padding:18px 0 30px;}
+
+  .hidden{display:none !important;}
+
+  .spinner{
+    width:16px; height:16px; border:2.5px solid rgba(255,255,255,0.4);
+    border-top-color:#fff; border-radius:50%; display:inline-block;
+    animation:spin .7s linear infinite; margin-right:8px; vertical-align:-3px;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .spinner{animation:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="flag-strip"><span></span><span></span><span></span></div>
+  <div class="logo-wrap"><img src="assets/logo.jpg" alt="Colegio Andino Montessori"></div>
+  <div class="eyebrow">Colegio Andino Montessori · CEPAMA</div>
+  <h1 class="stamp">Venta de<br>Empanadas</h1>
+  <div class="accent-script">Guayacán 2026</div>
+  <p class="sub">Pino y queso hechas con cariño por nuestra comunidad. Elige tus empanadas, transfiere y recibe tu comprobante con código de compra.</p>
+
+  <div class="stage-toggle">
+    <button type="button" id="btnPreventa" class="active">Preventa</button>
+    <button type="button" id="btnInterna">Venta interna</button>
+  </div>
+</div>
+
+<main>
+
+  <div class="card" id="tiendaCard">
+    <div class="promo-banner">🥟 Promoción: 2 empanadas x $6.000 (mezcla pino y queso, se aplica automático)</div>
+
+    <div class="prod pino">
+      <div class="icon">🥟</div>
+      <div class="info">
+        <div class="name">Empanada de Pino</div>
+        <div class="price">$3.500 c/u</div>
+        <div class="stockbar"><i id="barPino" style="width:100%"></i></div>
+        <div class="stocktxt" id="txtPino">200 disponibles</div>
+      </div>
+      <div class="stepper">
+        <button type="button" id="menosPino">–</button>
+        <span class="qty" id="qtyPino">0</span>
+        <button type="button" id="masPino">+</button>
+      </div>
+    </div>
+
+    <div class="prod queso">
+      <div class="icon">🧀</div>
+      <div class="info">
+        <div class="name">Empanada de Queso</div>
+        <div class="price">$3.500 c/u</div>
+        <div class="stockbar"><i id="barQueso" style="width:100%"></i></div>
+        <div class="stocktxt" id="txtQueso">50 disponibles</div>
+      </div>
+      <div class="stepper">
+        <button type="button" id="menosQueso">–</button>
+        <span class="qty" id="qtyQueso">0</span>
+        <button type="button" id="masQueso">+</button>
+      </div>
+    </div>
+
+    <div class="totals">
+      <div>
+        <div class="label">Total a pagar</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="amount" id="totalAmount">$0</div>
+        <span class="save hidden" id="saveTxt"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="formCard">
+    <label for="nombre">Nombre del alumno/a</label>
+    <input id="nombre" type="text" placeholder="Ej: Emilia Alvarado">
+
+    <label for="curso">Curso</label>
+    <input id="curso" type="text" placeholder="Ej: Taller 2 Guayacán">
+
+    <label for="whatsapp">WhatsApp del apoderado</label>
+    <input id="whatsapp" type="tel" placeholder="+569 1234 5678">
+    <div class="hint">Formato: +569 seguido de 8 dígitos</div>
+
+    <label for="correo">Correo electrónico</label>
+    <input id="correo" type="email" placeholder="apoderado@correo.com">
+
+    <button class="btn-main" id="btnGenerar" disabled>Selecciona al menos 1 empanada</button>
+    <div id="formError" class="status-msg error hidden"></div>
+  </div>
+
+  <div class="card hidden" id="confirmCard">
+    <h3 style="margin-top:0;text-align:center;color:var(--azul);">¡Pedido registrado!</h3>
+    <p style="text-align:center;font-size:13.5px;color:#555;">Tu código de compra es:</p>
+    <div class="order-code" id="codigoPedido">EMP-000</div>
+
+    <div class="bank-box">
+      <h3>Datos para transferir</h3>
+      <div class="bank-row"><span>Banco</span><span>Banco de Chile</span></div>
+      <div class="bank-row"><span>Tipo de cuenta</span><span>Cuenta Vista</span></div>
+      <div class="bank-row"><span>N° de cuenta</span><span>00-075-84210-95</span></div>
+      <div class="bank-row"><span>A nombre de</span><span>Patricia Bravo</span></div>
+      <div class="bank-row"><span>Monto</span><span id="bankMonto">$0</span></div>
+      <div class="bank-row" style="border-bottom:none;"><span>Glosa / asunto</span><span id="bankGlosa">EMP-000</span></div>
+    </div>
+
+    <p style="font-size:12.5px;color:#777;text-align:center;">Importante: pon el código como glosa de la transferencia para que podamos verificarla más rápido.</p>
+
+    <button class="btn-secondary" id="btnNuevo">Hacer otro pedido</button>
+    <p style="font-size:11.5px;color:#999;text-align:center;margin-top:10px;">Te enviaremos el comprobante por correo y WhatsApp apenas verifiquemos tu transferencia. Con eso podrás retirar tus empanadas en el stand.</p>
+  </div>
+
+  <footer>CEPAMA · Colegio Andino Montessori · Guayacán 2026</footer>
+</main>
+
+<script>
+// ====== CONFIGURA AQUÍ TU URL DE APPS SCRIPT ======
+const API_URL = "PEGA_AQUI_TU_URL_DE_APPS_SCRIPT_WEB_APP";
+// ===================================================
+
+const PRECIO = 3500;
+const PROMO_PAR = 6000;
+
+let stock = { pino: 200, queso: 50 };
+let qty = { pino: 0, queso: 0 };
+let etapa = "Preventa";
+
+const el = id => document.getElementById(id);
+
+el("btnPreventa").onclick = () => setEtapa("Preventa");
+el("btnInterna").onclick = () => setEtapa("Venta interna");
+function setEtapa(e){
+  etapa = e;
+  el("btnPreventa").classList.toggle("active", e === "Preventa");
+  el("btnInterna").classList.toggle("active", e === "Venta interna");
+}
+
+function renderStock(){
+  const pPct = Math.max(0, (stock.pino / 200) * 100);
+  const qPct = Math.max(0, (stock.queso / 50) * 100);
+  el("barPino").style.width = pPct + "%";
+  el("barQueso").style.width = qPct + "%";
+  el("txtPino").textContent = stock.pino > 0 ? stock.pino + " disponibles" : "Agotado";
+  el("txtQueso").textContent = stock.queso > 0 ? stock.queso + " disponibles" : "Agotado";
+  el("masPino").disabled = qty.pino >= stock.pino;
+  el("masQueso").disabled = qty.queso >= stock.queso;
+}
+
+function calcTotal(){
+  const total_unidades = qty.pino + qty.queso;
+  const pares = Math.floor(total_unidades / 2);
+  const sueltas = total_unidades % 2;
+  const total = pares * PROMO_PAR + sueltas * PRECIO;
+  const sinPromo = total_unidades * PRECIO;
+  return { total, ahorro: sinPromo - total, total_unidades };
+}
+
+function render(){
+  el("qtyPino").textContent = qty.pino;
+  el("qtyQueso").textContent = qty.queso;
+  el("menosPino").disabled = qty.pino <= 0;
+  el("menosQueso").disabled = qty.queso <= 0;
+  renderStock();
+
+  const { total, ahorro, total_unidades } = calcTotal();
+  el("totalAmount").textContent = "$" + total.toLocaleString("es-CL");
+  if(ahorro > 0){
+    el("saveTxt").textContent = "Ahorras $" + ahorro.toLocaleString("es-CL");
+    el("saveTxt").classList.remove("hidden");
+  } else {
+    el("saveTxt").classList.add("hidden");
+  }
+
+  const btn = el("btnGenerar");
+  if(total_unidades === 0){
+    btn.disabled = true;
+    btn.textContent = "Selecciona al menos 1 empanada";
+  } else {
+    btn.disabled = false;
+    btn.textContent = "Generar pedido y transferir · $" + total.toLocaleString("es-CL");
+  }
+}
+
+el("masPino").onclick = () => { if(qty.pino < stock.pino){ qty.pino++; render(); } };
+el("menosPino").onclick = () => { if(qty.pino > 0){ qty.pino--; render(); } };
+el("masQueso").onclick = () => { if(qty.queso < stock.queso){ qty.queso++; render(); } };
+el("menosQueso").onclick = () => { if(qty.queso > 0){ qty.queso--; render(); } };
+
+function validarWhatsapp(v){
+  return /^\+?569\d{8}$/.test(v.replace(/\s/g, ""));
+}
+
+el("btnGenerar").onclick = async () => {
+  const nombre = el("nombre").value.trim();
+  const curso = el("curso").value.trim();
+  const whatsapp = el("whatsapp").value.trim();
+  const correo = el("correo").value.trim();
+  const errBox = el("formError");
+  errBox.classList.add("hidden");
+
+  if(!nombre || !curso || !whatsapp || !correo){
+    errBox.textContent = "Completa todos los campos para continuar.";
+    errBox.classList.remove("hidden");
+    return;
+  }
+  if(!validarWhatsapp(whatsapp)){
+    errBox.textContent = "Revisa el número de WhatsApp (formato +569XXXXXXXX).";
+    errBox.classList.remove("hidden");
+    return;
+  }
+  if(!/^\S+@\S+\.\S+$/.test(correo)){
+    errBox.textContent = "Revisa el correo electrónico.";
+    errBox.classList.remove("hidden");
+    return;
+  }
+
+  const btn = el("btnGenerar");
+  btn.disabled = true;
+  const original = btn.textContent;
+  btn.innerHTML = '<span class="spinner"></span> Generando pedido...';
+
+  const { total } = calcTotal();
+  const payload = {
+    action: "crear_pedido",
+    etapa, nombre, curso, whatsapp, correo,
+    cantidad_pino: qty.pino,
+    cantidad_queso: qty.queso,
+    total
+  };
+
+  try{
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+
+    if(!data.ok){
+      errBox.textContent = data.mensaje || "No pudimos registrar el pedido, intenta de nuevo.";
+      errBox.classList.remove("hidden");
+      btn.disabled = false;
+      btn.textContent = original;
+      return;
+    }
+
+    // actualizar stock local con lo que confirma el servidor
+    stock.pino = data.stock_pino;
+    stock.queso = data.stock_queso;
+
+    el("codigoPedido").textContent = data.codigo;
+    el("bankMonto").textContent = "$" + total.toLocaleString("es-CL");
+    el("bankGlosa").textContent = data.codigo;
+
+    el("tiendaCard").classList.add("hidden");
+    el("formCard").classList.add("hidden");
+    el("confirmCard").classList.remove("hidden");
+    window.scrollTo({top:0, behavior:"smooth"});
+
+  }catch(e){
+    errBox.textContent = "Hubo un problema de conexión. Intenta nuevamente.";
+    errBox.classList.remove("hidden");
+    btn.disabled = false;
+    btn.textContent = original;
+  }
+};
+
+el("btnNuevo").onclick = () => {
+  qty = { pino: 0, queso: 0 };
+  el("nombre").value = ""; el("curso").value = ""; el("whatsapp").value = ""; el("correo").value = "";
+  el("confirmCard").classList.add("hidden");
+  el("tiendaCard").classList.remove("hidden");
+  el("formCard").classList.remove("hidden");
+  render();
+  window.scrollTo({top:0, behavior:"smooth"});
+};
+
+render();
+
+// cargar stock real desde el backend al abrir la página
+(async () => {
+  try{
+    const res = await fetch(API_URL + "?action=stock");
+    const data = await res.json();
+    if(data.ok){
+      stock.pino = data.stock_pino;
+      stock.queso = data.stock_queso;
+      render();
+    }
+  }catch(e){ /* si falla, se usa el stock inicial por defecto */ }
+})();
+</script>
+</body>
+</html>
