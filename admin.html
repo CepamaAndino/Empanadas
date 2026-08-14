@@ -368,15 +368,14 @@ function imprimirVoucher(codigo){
   <div class="fila"><span>Hora entrega</span><span>${hora}</span></div>
   <hr>
   <div class="centro sub">¡Gracias por tu compra!</div>
-  <script>
-    window.onload = function(){ window.print(); };
-  </script>
 </body>
 </html>`;
 
   const ventana = window.open("", "_blank", "width=320,height=520");
   ventana.document.write(html);
   ventana.document.close();
+  ventana.onload = () => { ventana.focus(); ventana.print(); };
+  setTimeout(() => { try{ ventana.focus(); ventana.print(); }catch(e){} }, 400);
 }
 
 async function accionar(codigo, accion, btnEl){
