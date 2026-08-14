@@ -49,35 +49,150 @@
   .btn-no{background:var(--rojo); color:#fff;}
   .btn-wsp{background:#25D366; color:#fff;}
   .btn-entregado{background:var(--azul); color:#fff;}
+  .btn-print{background:#5A4A32; color:#fff;}
   .actions button:disabled{background:#ddd; color:#999; cursor:not-allowed;}
 
   .empty{text-align:center; padding:40px; color:#999; font-size:14px;}
   .loading{text-align:center; padding:40px; color:#999; font-size:14px;}
+
+  /* Tabs */
+  .tabs{display:flex; gap:8px; margin-bottom:16px;}
+  .tabs button{
+    flex:1; padding:11px; border-radius:10px; border:1.5px solid var(--linea); background:#fff;
+    font-weight:800; font-size:13.5px; cursor:pointer; color:#666;
+  }
+  .tabs button.active{background:var(--azul); color:#fff; border-color:var(--azul);}
+
+  /* Caja rápida */
+  .caja-card{background:#fff; border-radius:16px; padding:20px; box-shadow:0 4px 16px rgba(11,42,91,0.08); max-width:460px; margin:0 auto;}
+  .caja-prod{display:flex; align-items:center; gap:12px; padding:12px; border-radius:12px; margin-bottom:10px;}
+  .caja-prod.pino{background:#F4E7D6;}
+  .caja-prod.queso{background:#FEF3D9;}
+  .caja-prod .nombre{flex:1; font-weight:800; font-size:14.5px;}
+  .caja-prod .disp{font-size:11px; color:#777; font-weight:600;}
+  .caja-stepper{display:flex; align-items:center; gap:8px;}
+  .caja-stepper button{
+    width:30px; height:30px; border-radius:50%; border:none; cursor:pointer; font-size:16px;
+    font-weight:800; color:#fff; background:var(--azul);
+  }
+  .caja-stepper button:disabled{background:#ccc;}
+  .caja-stepper .qty{width:24px; text-align:center; font-weight:800;}
+
+  .caja-total{
+    display:flex; justify-content:space-between; align-items:center; padding:14px 0;
+    border-top:2px dashed var(--linea); border-bottom:2px dashed var(--linea); margin:14px 0;
+  }
+  .caja-total .num{font-family:'Anton'; font-size:28px; color:var(--azul);}
+
+  .medio-pago{display:flex; gap:8px; margin-bottom:12px;}
+  .medio-pago button{
+    flex:1; padding:10px; border-radius:10px; border:1.5px solid var(--linea); background:#fff;
+    font-weight:700; font-size:13px; cursor:pointer;
+  }
+  .medio-pago button.active{background:var(--verde); color:#fff; border-color:var(--verde);}
+
+  .billetes{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px;}
+  .billetes button{
+    padding:12px; border-radius:10px; border:1.5px solid var(--linea); background:#fff;
+    font-weight:800; font-size:13.5px; cursor:pointer;
+  }
+  .billetes button.active{background:#F6C453; border-color:#c99a1f;}
+
+  .vuelto-box{
+    background:#EEF2FF; border-radius:12px; padding:14px; text-align:center; margin-bottom:14px;
+  }
+  .vuelto-box .label{font-size:11.5px; color:#666; font-weight:700; text-transform:uppercase;}
+  .vuelto-box .num{font-family:'Anton'; font-size:26px; color:var(--verde);}
+  .vuelto-box .num.neg{color:var(--rojo);}
+
+  .btn-confirmar-venta{
+    width:100%; padding:14px; border:none; border-radius:12px; background:var(--verde); color:#fff;
+    font-weight:800; font-size:15px; cursor:pointer;
+  }
+  .btn-confirmar-venta:disabled{background:#ccc; cursor:not-allowed;}
+
+  .caja-msg{text-align:center; font-size:13px; padding:10px; border-radius:10px; margin-top:10px;}
+  .caja-msg.ok{background:#DFF3E5; color:var(--verde);}
+  .caja-msg.error{background:#FBE0DE; color:var(--rojo);}
 </style>
 </head>
 <body>
 
 <header>
   <h1>PANEL ADMIN — EMPANADAS GUAYACÁN 2026</h1>
-  <p>Verificación de pagos ·  Colegio Andino Montessori</p>
+  <p>Verificación de pagos · Colegio Andino Montessori</p>
 </header>
 
 <main>
-  <div class="toolbar">
-    <select id="filtroEstado">
-      <option value="">Todos los estados</option>
-      <option value="Pendiente">Pendiente</option>
-      <option value="Verificado">Verificado</option>
-      <option value="Entregado">Entregado</option>
-      <option value="Rechazado">Rechazado</option>
-    </select>
-    <input type="text" id="buscar" placeholder="Buscar por nombre, curso o código...">
-    <button id="btnRefrescar">🔄 Refrescar</button>
-    <button id="btnExportar">⬇️ Exportar reporte a Drive</button>
-    <span class="stock-pill" id="pillStock">Stock: -- pino / -- queso</span>
+  <div class="tabs">
+    <button id="tabPedidos" class="active">📋 Pedidos online</button>
+    <button id="tabCaja">💵 Caja rápida (stand)</button>
   </div>
 
-  <div id="contenido" class="loading">Cargando pedidos...</div>
+  <div id="vistaPedidos">
+    <div class="toolbar">
+      <select id="filtroEstado">
+        <option value="">Todos los estados</option>
+        <option value="Pendiente">Pendiente</option>
+        <option value="Verificado">Verificado</option>
+        <option value="Entregado">Entregado</option>
+        <option value="Rechazado">Rechazado</option>
+      </select>
+      <input type="text" id="buscar" placeholder="Buscar por nombre, curso o código...">
+      <button id="btnRefrescar">🔄 Refrescar</button>
+      <button id="btnExportar">⬇️ Exportar reporte a Drive</button>
+      <span class="stock-pill" id="pillStock">Stock: -- pino / -- queso</span>
+    </div>
+
+    <div id="contenido" class="loading">Cargando pedidos...</div>
+  </div>
+
+  <div id="vistaCaja" class="hidden">
+    <div class="caja-card">
+      <div class="caja-prod pino">
+        <div class="nombre">Empanada Pino<br><span class="disp" id="cajaDispPino">-- disponibles</span></div>
+        <div class="caja-stepper">
+          <button id="cajaMenosPino">–</button>
+          <span class="qty" id="cajaQtyPino">0</span>
+          <button id="cajaMasPino">+</button>
+        </div>
+      </div>
+      <div class="caja-prod queso">
+        <div class="nombre">Empanada Queso<br><span class="disp" id="cajaDispQueso">-- disponibles</span></div>
+        <div class="caja-stepper">
+          <button id="cajaMenosQueso">–</button>
+          <span class="qty" id="cajaQtyQueso">0</span>
+          <button id="cajaMasQueso">+</button>
+        </div>
+      </div>
+
+      <div class="caja-total">
+        <span style="font-size:13px;color:#666;font-weight:700;">Total</span>
+        <span class="num" id="cajaTotal">$0</span>
+      </div>
+
+      <div class="medio-pago">
+        <button id="cajaEfectivo" class="active">💵 Efectivo</button>
+        <button id="cajaTransferencia">🏦 Transferencia</button>
+      </div>
+
+      <div id="cajaBilletesWrap">
+        <div class="billetes">
+          <button data-billete="exacto">Exacto</button>
+          <button data-billete="5000">$5.000</button>
+          <button data-billete="10000">$10.000</button>
+          <button data-billete="20000">$20.000</button>
+        </div>
+        <div class="vuelto-box">
+          <div class="label">Vuelto</div>
+          <div class="num" id="cajaVuelto">$0</div>
+        </div>
+      </div>
+
+      <button class="btn-confirmar-venta" id="btnConfirmarVenta" disabled>Selecciona empanadas</button>
+      <div id="cajaMsg" class="caja-msg hidden"></div>
+    </div>
+  </div>
 </main>
 
 <script>
@@ -151,6 +266,9 @@ function render(){
   document.querySelectorAll("button[data-wsp]").forEach(btn => {
     btn.onclick = () => enviarWhatsapp(btn.dataset.wsp, btn.dataset.codigo);
   });
+  document.querySelectorAll("button[data-print]").forEach(btn => {
+    btn.onclick = () => imprimirVoucher(btn.dataset.print);
+  });
 }
 
 function botonesPorEstado(p){
@@ -166,6 +284,9 @@ function botonesPorEstado(p){
       <button class="btn-wsp" data-wsp="aprobacion" data-codigo="${p.codigo}">📲 Aprobación</button>
       <button class="btn-entregado" data-codigo="${p.codigo}" data-accion="entregar">✅ Entregado</button>
     `;
+  }
+  if(p.estado === "Entregado"){
+    return `<button class="btn-print" data-print="${p.codigo}">🖨️ Reimprimir voucher</button>`;
   }
   return `<span style="color:#aaa;font-size:11.5px;">—</span>`;
 }
@@ -183,17 +304,86 @@ function enviarWhatsapp(tipo, codigo){
   if(tipo === "comprobante"){
     texto = `Hola! 👋 Este es tu comprobante de pedido de Empanadas Guayacán 2026.%0A%0ACódigo: ${p.codigo}%0AAlumno/a: ${p.nombre}%0ACurso: ${p.curso}%0APino: ${p.cantidad_pino} · Queso: ${p.cantidad_queso}%0ATotal: $${Number(p.total).toLocaleString("es-CL")}%0A%0ATransfiere a Banco de Chile, Cuenta Vista 00-075-84210-95, a nombre de Patricia Bravo, usando tu código ${p.codigo} como glosa.%0A%0AApenas verifiquemos tu pago te avisamos para que retires en el stand. ¡Gracias por tu compra!`;
   } else {
-    texto = `¡Hola! ✅ Tu pago del pedido ${p.codigo} fue verificado.%0A%0APasa a retirar tus empanadas (Pino: ${p.cantidad_pino} · Queso: ${p.cantidad_queso}) en el stand de Guayacán, mostrando tu código: ${p.codigo}.%0A%0A¡Gracias por apoyar a CEPAMA!`;
+    texto = `¡Hola! ✅ Tu pago del pedido ${p.codigo} fue verificado.%0A%0APasa a retirar tus empanadas (Pino: ${p.cantidad_pino} · Queso: ${p.cantidad_queso}) en el stand de Guayacán, mostrando tu código: ${p.codigo}.%0A%0A¡Gracias por tu compra!`;
   }
 
   window.open(`https://wa.me/${numero}?text=${texto}`, "_blank");
 }
 
+function imprimirVoucher(codigo){
+  const p = pedidos.find(x => x.codigo === codigo);
+  if(!p) return;
+
+  const ahora = new Date();
+  const fecha = ahora.toLocaleDateString("es-CL");
+  const hora = ahora.toLocaleTimeString("es-CL", { hour: "2-digit", minute: "2-digit" });
+
+  const lineas = [];
+  if(Number(p.cantidad_pino) > 0) lineas.push({ nombre: "Empanada Pino", cant: p.cantidad_pino });
+  if(Number(p.cantidad_queso) > 0) lineas.push({ nombre: "Empanada Queso", cant: p.cantidad_queso });
+
+  const filasProductos = lineas.map(l =>
+    `<div class="fila"><span>${l.nombre} x${l.cant}</span></div>`
+  ).join("");
+
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Voucher ${p.codigo}</title>
+<style>
+  @page { size: 58mm auto; margin: 0; }
+  * { box-sizing: border-box; }
+  body{
+    width: 58mm; margin: 0; padding: 4mm 3mm 8mm;
+    font-family: 'Courier New', Courier, monospace; font-size: 11px; color: #000;
+  }
+  .centro{ text-align: center; }
+  .logo{ font-family: Arial, sans-serif; font-weight: 900; font-size: 18px; letter-spacing: 1px; }
+  .sub{ font-family: Arial, sans-serif; font-size: 10.5px; font-style: italic; margin: 0 0 6px; }
+  hr{ border: none; border-top: 1px dashed #000; margin: 6px 0; }
+  .fila{ display: flex; justify-content: space-between; margin: 2px 0; }
+  .total{ font-weight: bold; font-size: 13px; }
+  .codigo{ font-weight: bold; font-size: 15px; text-align: center; margin: 6px 0; letter-spacing: 1px; }
+  .etiqueta{ font-size: 9.5px; color: #333; }
+</style>
+</head>
+<body>
+  <div class="centro">
+    <div class="logo">GUAYACÁN</div>
+    <div class="sub">Empanadas</div>
+  </div>
+  <hr>
+  <div class="codigo">${p.codigo}</div>
+  <div class="etiqueta">Alumno/a</div>
+  <div>${p.nombre}</div>
+  <div class="etiqueta" style="margin-top:4px;">Curso</div>
+  <div>${p.curso}</div>
+  <hr>
+  ${filasProductos}
+  <hr>
+  <div class="fila total"><span>TOTAL</span><span>$${Number(p.total).toLocaleString("es-CL")}</span></div>
+  <hr>
+  <div class="fila"><span>Fecha entrega</span><span>${fecha}</span></div>
+  <div class="fila"><span>Hora entrega</span><span>${hora}</span></div>
+  <hr>
+  <div class="centro sub">¡Gracias por tu compra!</div>
+  <script>
+    window.onload = function(){ window.print(); };
+  </script>
+</body>
+</html>`;
+
+  const ventana = window.open("", "_blank", "width=320,height=520");
+  ventana.document.write(html);
+  ventana.document.close();
+}
+
 async function accionar(codigo, accion, btnEl){
   const mensajes = {
-    verificar: `¿Confirmas que verificaste la transferencia del pedido ${codigo}? Se enviará el comprobante por correo.`,
+    verificar: `¿Confirmas que verificaste la transferencia del pedido ${codigo}? Se abrirá WhatsApp con el mensaje de aprobación.`,
     rechazar: `¿Rechazar el pedido ${codigo}? Se restaurará el stock reservado.`,
-    entregar: `¿Confirmas que ya entregaste las empanadas del pedido ${codigo} en el stand?`
+    entregar: `¿Confirmas que ya entregaste las empanadas del pedido ${codigo} en el stand? Se imprimirá el voucher.`
   };
   if(!confirm(mensajes[accion])) return;
 
@@ -206,6 +396,12 @@ async function accionar(codigo, accion, btnEl){
     const data = await res.json();
     if(!data.ok){
       alert(data.mensaje || "Ocurrió un error.");
+    } else if(accion === "verificar"){
+      // apenas se verifica, se abre WhatsApp solo con el mensaje de aprobación listo para enviar
+      enviarWhatsapp("aprobacion", codigo);
+    } else if(accion === "entregar"){
+      // apenas se marca como entregado, se imprime el voucher de 58mm
+      imprimirVoucher(codigo);
     }
     await cargar();
   }catch(e){
@@ -238,6 +434,171 @@ document.getElementById("btnExportar").onclick = async () => {
 };
 
 cargar();
+
+// ============ TABS ============
+document.getElementById("tabPedidos").onclick = () => {
+  document.getElementById("tabPedidos").classList.add("active");
+  document.getElementById("tabCaja").classList.remove("active");
+  document.getElementById("vistaPedidos").classList.remove("hidden");
+  document.getElementById("vistaCaja").classList.add("hidden");
+};
+document.getElementById("tabCaja").onclick = () => {
+  document.getElementById("tabCaja").classList.add("active");
+  document.getElementById("tabPedidos").classList.remove("active");
+  document.getElementById("vistaCaja").classList.remove("hidden");
+  document.getElementById("vistaPedidos").classList.add("hidden");
+  cajaRender();
+};
+
+// ============ CAJA RÁPIDA ============
+const PRECIO_CAJA = 3500;
+const PROMO_PAR_CAJA = 6000;
+let cajaStock = { pino: 0, queso: 0 };
+let cajaQty = { pino: 0, queso: 0 };
+let cajaMedioPago = "Efectivo";
+let cajaBilleteSeleccionado = null;
+
+function cajaCalcTotal(){
+  const totalUnidades = cajaQty.pino + cajaQty.queso;
+  const pares = Math.floor(totalUnidades / 2);
+  const sueltas = totalUnidades % 2;
+  const total = pares * PROMO_PAR_CAJA + sueltas * PRECIO_CAJA;
+  return { total, totalUnidades };
+}
+
+function cajaRender(){
+  cajaStock.pino = Number(document.getElementById("pillStock").textContent.match(/(\d+)\s*pino/)?.[1] || cajaStock.pino);
+  cajaStock.queso = Number(document.getElementById("pillStock").textContent.match(/(\d+)\s*queso/)?.[1] || cajaStock.queso);
+
+  document.getElementById("cajaDispPino").textContent = cajaStock.pino + " disponibles";
+  document.getElementById("cajaDispQueso").textContent = cajaStock.queso + " disponibles";
+  document.getElementById("cajaQtyPino").textContent = cajaQty.pino;
+  document.getElementById("cajaQtyQueso").textContent = cajaQty.queso;
+  document.getElementById("cajaMasPino").disabled = cajaQty.pino >= cajaStock.pino;
+  document.getElementById("cajaMasQueso").disabled = cajaQty.queso >= cajaStock.queso;
+  document.getElementById("cajaMenosPino").disabled = cajaQty.pino <= 0;
+  document.getElementById("cajaMenosQueso").disabled = cajaQty.queso <= 0;
+
+  const { total, totalUnidades } = cajaCalcTotal();
+  document.getElementById("cajaTotal").textContent = "$" + total.toLocaleString("es-CL");
+
+  cajaActualizarVuelto();
+
+  const btn = document.getElementById("btnConfirmarVenta");
+  if(totalUnidades === 0){
+    btn.disabled = true;
+    btn.textContent = "Selecciona empanadas";
+  } else if(cajaMedioPago === "Efectivo" && cajaBilleteSeleccionado === null){
+    btn.disabled = true;
+    btn.textContent = "Elige con qué pagó";
+  } else {
+    const vuelto = cajaGetVuelto();
+    if(cajaMedioPago === "Efectivo" && vuelto < 0){
+      btn.disabled = true;
+      btn.textContent = "Monto insuficiente";
+    } else {
+      btn.disabled = false;
+      btn.textContent = "Confirmar venta · $" + total.toLocaleString("es-CL");
+    }
+  }
+}
+
+function cajaGetVuelto(){
+  const { total } = cajaCalcTotal();
+  if(cajaMedioPago !== "Efectivo" || cajaBilleteSeleccionado === null) return 0;
+  const montoRecibido = cajaBilleteSeleccionado === "exacto" ? total : Number(cajaBilleteSeleccionado);
+  return montoRecibido - total;
+}
+
+function cajaActualizarVuelto(){
+  const vuelto = cajaGetVuelto();
+  const el = document.getElementById("cajaVuelto");
+  el.textContent = "$" + vuelto.toLocaleString("es-CL");
+  el.classList.toggle("neg", vuelto < 0);
+}
+
+document.getElementById("cajaMasPino").onclick = () => { if(cajaQty.pino < cajaStock.pino){ cajaQty.pino++; cajaRender(); } };
+document.getElementById("cajaMenosPino").onclick = () => { if(cajaQty.pino > 0){ cajaQty.pino--; cajaRender(); } };
+document.getElementById("cajaMasQueso").onclick = () => { if(cajaQty.queso < cajaStock.queso){ cajaQty.queso++; cajaRender(); } };
+document.getElementById("cajaMenosQueso").onclick = () => { if(cajaQty.queso > 0){ cajaQty.queso--; cajaRender(); } };
+
+document.getElementById("cajaEfectivo").onclick = () => {
+  cajaMedioPago = "Efectivo";
+  cajaBilleteSeleccionado = null;
+  document.getElementById("cajaEfectivo").classList.add("active");
+  document.getElementById("cajaTransferencia").classList.remove("active");
+  document.getElementById("cajaBilletesWrap").classList.remove("hidden");
+  document.querySelectorAll(".billetes button").forEach(b => b.classList.remove("active"));
+  cajaRender();
+};
+document.getElementById("cajaTransferencia").onclick = () => {
+  cajaMedioPago = "Transferencia";
+  cajaBilleteSeleccionado = null;
+  document.getElementById("cajaTransferencia").classList.add("active");
+  document.getElementById("cajaEfectivo").classList.remove("active");
+  document.getElementById("cajaBilletesWrap").classList.add("hidden");
+  cajaRender();
+};
+
+document.querySelectorAll(".billetes button").forEach(btn => {
+  btn.onclick = () => {
+    cajaBilleteSeleccionado = btn.dataset.billete;
+    document.querySelectorAll(".billetes button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    cajaRender();
+  };
+});
+
+document.getElementById("btnConfirmarVenta").onclick = async () => {
+  const btn = document.getElementById("btnConfirmarVenta");
+  const msg = document.getElementById("cajaMsg");
+  msg.classList.add("hidden");
+  btn.disabled = true;
+  const original = btn.textContent;
+  btn.textContent = "Registrando...";
+
+  const { total } = cajaCalcTotal();
+  const montoRecibido = cajaMedioPago === "Efectivo"
+    ? (cajaBilleteSeleccionado === "exacto" ? total : Number(cajaBilleteSeleccionado))
+    : total;
+
+  try{
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "venta_presencial",
+        cantidad_pino: cajaQty.pino,
+        cantidad_queso: cajaQty.queso,
+        medio_pago: cajaMedioPago,
+        monto_recibido: montoRecibido
+      })
+    });
+    const data = await res.json();
+
+    if(!data.ok){
+      msg.textContent = data.mensaje || "No se pudo registrar la venta.";
+      msg.className = "caja-msg error";
+      btn.disabled = false;
+      btn.textContent = original;
+      return;
+    }
+
+    document.getElementById("pillStock").textContent = `Stock: ${data.stock_pino} pino / ${data.stock_queso} queso`;
+    msg.textContent = `✅ Venta ${data.codigo} registrada` + (data.vuelto > 0 ? ` — Vuelto: $${data.vuelto.toLocaleString("es-CL")}` : "");
+    msg.className = "caja-msg ok";
+
+    cajaQty = { pino: 0, queso: 0 };
+    cajaBilleteSeleccionado = null;
+    document.querySelectorAll(".billetes button").forEach(b => b.classList.remove("active"));
+    cajaRender();
+
+  }catch(e){
+    msg.textContent = "Error de conexión.";
+    msg.className = "caja-msg error";
+    btn.disabled = false;
+    btn.textContent = original;
+  }
+};
 </script>
 </body>
 </html>

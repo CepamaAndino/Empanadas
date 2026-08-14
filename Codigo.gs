@@ -1,6 +1,6 @@
 /**
  * VENTA DE EMPANADAS GUAYACÁN 2026 — Backend (Google Apps Script)
- * Colegio Andino Montessori · CEPAMA
+ * Colegio Andino Montessori
  *
  * INSTRUCCIONES DE INSTALACIÓN
  * 1. Crea una Google Sheet nueva llamada "Empanadas Guayacán 2026 - Datos".
@@ -14,16 +14,14 @@
  * 3. Extensiones > Apps Script. Pega este código en Codigo.gs.
  * 4. Reemplaza CARPETA_DRIVE_ID abajo por el ID de una carpeta de Drive donde
  *    quieras que se guarden los reportes CSV (o déjalo vacío para usar Mi unidad).
- * 5. Reemplaza CORREO_ADMIN por tu correo (para copia de notificaciones).
- * 6. Implementar > Nueva implementación > Aplicación web.
+ * 5. Implementar > Nueva implementación > Aplicación web.
  *    - Ejecutar como: Yo
  *    - Quién tiene acceso: Cualquier usuario
  *    Copia la URL y pégala en API_URL dentro de index.html y admin.html.
  */
 
-const SHEET_ID = "1YweawXKB204XMn0Wg062cSWXvWvQASP9YjdprzZYU_w";
+const SHEET_ID = "1YTCEL-OU-A_EXusKUYUpemwwyCDIHR41-C3B8EfKiVU";
 const CARPETA_DRIVE_ID = ""; // opcional: ID de carpeta de Drive para los reportes
-const CORREO_ADMIN = "cepama.andino.montessori@gmail.com";
 const STOCK_INICIAL_PINO = 200;
 const STOCK_INICIAL_QUESO = 50;
 const PRECIO = 3500;
@@ -56,6 +54,7 @@ function doPost(e) {
     if (body.action === "verificar_pago") return verificarPago(body);
     if (body.action === "rechazar_pago") return rechazarPago(body);
     if (body.action === "marcar_entregado") return marcarEntregado(body);
+    if (body.action === "venta_presencial") return ventaPresencial(body);
     if (body.action === "exportar_reporte") return exportarReporteDrive();
     return jsonOut({ ok: false, mensaje: "Acción no reconocida" });
   } finally {
@@ -65,6 +64,16 @@ function doPost(e) {
 
 function getSheet(nombre) {
   return SpreadsheetApp.openById(SHEET_ID).getSheetByName(nombre);
+}
+
+function getOrCreateSheet(nombre, headers) {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  let sh = ss.getSheetByName(nombre);
+  if (!sh) {
+    sh = ss.insertSheet(nombre);
+    sh.appendRow(headers);
+  }
+  return sh;
 }
 
 function obtenerStock() {
@@ -157,9 +166,6 @@ function verificarPago(body) {
   const sh = getSheet("Pedidos");
   sh.getRange(encontrado.fila, 11).setValue("Verificado"); // columna K = Estado
 
-  const [codigo, fecha, etapa, nombre, curso, whatsapp, correo, cantPino, cantQueso, total] = encontrado.datos;
-  enviarCorreoComprobante(correo, nombre, curso, codigo, cantPino, cantQueso, total);
-
   return jsonOut({ ok: true });
 }
 
@@ -194,6 +200,69 @@ function marcarEntregado(body) {
   return jsonOut({ ok: true });
 }
 
+const HEADERS_CAJA = ["Codigo","Fecha","Hora","CantPino","CantQueso","Total","MedioPago","MontoRecibido","Vuelto"];
+
+function siguienteCodigoCaja() {
+  const sh = getOrCreateSheet("VentaPresencial", HEADERS_CAJA);
+  const ultimaFila = sh.getLastRow();
+  const n = ultimaFila < 2 ? 1 : ultimaFila; // fila 1 = encabezado
+  return "CAJA-" + String(n).padStart(3, "0");
+}
+
+function ventaPresencial(body) {
+  const cantPino = Number(body.cantidad_pino) || 0;
+  const cantQueso = Number(body.cantidad_queso) || 0;
+
+  if (cantPino <= 0 && cantQueso <= 0) {
+    return jsonOut({ ok: false, mensaje: "Selecciona al menos una empanada." });
+  }
+
+  const stock = obtenerStock();
+  if (cantPino > stock.pino) {
+    return jsonOut({ ok: false, mensaje: "No queda suficiente stock de pino.", stock_pino: stock.pino, stock_queso: stock.queso });
+  }
+  if (cantQueso > stock.queso) {
+    return jsonOut({ ok: false, mensaje: "No queda suficiente stock de queso.", stock_pino: stock.pino, stock_queso: stock.queso });
+  }
+
+  const totalUnidades = cantPino + cantQueso;
+  const pares = Math.floor(totalUnidades / 2);
+  const sueltas = totalUnidades % 2;
+  const total = pares * PROMO_PAR + sueltas * PRECIO;
+
+  const nuevoPino = stock.pino - cantPino;
+  const nuevoQueso = stock.queso - cantQueso;
+  setStock(nuevoPino, nuevoQueso);
+
+  const medioPago = body.medio_pago === "Transferencia" ? "Transferencia" : "Efectivo";
+  const montoRecibido = medioPago === "Efectivo" ? (Number(body.monto_recibido) || total) : total;
+  const vuelto = medioPago === "Efectivo" ? Math.max(0, montoRecibido - total) : 0;
+
+  const codigo = siguienteCodigoCaja();
+  const sh = getOrCreateSheet("VentaPresencial", HEADERS_CAJA);
+  const ahora = new Date();
+  sh.appendRow([
+    codigo,
+    ahora,
+    Utilities.formatDate(ahora, "GMT-4", "HH:mm"),
+    cantPino,
+    cantQueso,
+    total,
+    medioPago,
+    montoRecibido,
+    vuelto
+  ]);
+
+  return jsonOut({
+    ok: true,
+    codigo: codigo,
+    total: total,
+    vuelto: vuelto,
+    stock_pino: nuevoPino,
+    stock_queso: nuevoQueso
+  });
+}
+
 function listarPedidos() {
   const sh = getSheet("Pedidos");
   const data = sh.getDataRange().getValues();
@@ -214,28 +283,6 @@ function listarPedidos() {
     });
   }
   return out;
-}
-
-function enviarCorreoComprobante(correo, nombre, curso, codigo, cantPino, cantQueso, total) {
-  const asunto = "Comprobante de compra — Empanadas Guayacán 2026 (" + codigo + ")";
-  const cuerpo =
-    "¡Hola!\n\n" +
-    "Confirmamos tu compra de Empanadas Guayacán 2026, Colegio Andino Montessori.\n\n" +
-    "Código de compra: " + codigo + "\n" +
-    "Alumno/a: " + nombre + "\n" +
-    "Curso: " + curso + "\n" +
-    "Empanadas de pino: " + cantPino + "\n" +
-    "Empanadas de queso: " + cantQueso + "\n" +
-    "Total pagado: $" + Number(total).toLocaleString("es-CL") + "\n\n" +
-    "Tu pago fue verificado. ¡Gracias por apoyar a CEPAMA!\n\n" +
-    "Colegio Andino Montessori";
-
-  MailApp.sendEmail({
-    to: correo,
-    cc: CORREO_ADMIN,
-    subject: asunto,
-    body: cuerpo
-  });
 }
 
 /**
