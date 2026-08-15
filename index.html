@@ -182,12 +182,21 @@
   .bank-row span:first-child{color:#B9CCF0;}
   .bank-row span:last-child{font-weight:700;}
 
+  .monto-box{
+    background:#FEF3D9; border:2px dashed var(--queso); border-radius:14px;
+    padding:14px; text-align:center; margin-bottom:14px;
+  }
+  .monto-box .label{font-size:12px; color:#8A6100; font-weight:700; text-transform:uppercase; letter-spacing:.04em;}
+  .monto-box .num{font-family:'Anton'; font-size:34px; color:var(--azul); line-height:1.1;}
+
   .btn-secondary{
     width:100%; padding:14px; border-radius:12px; border:2px solid var(--azul);
     background:#fff; color:var(--azul); font-weight:800; font-size:14.5px; margin-top:8px; cursor:pointer;
     display:flex; align-items:center; justify-content:center; gap:8px;
   }
   .btn-wsp{border-color:#25D366; color:#128C3B;}
+  .btn-copiar{border-color:#F6C453; color:#8A6100; background:#FFFBF0;}
+  .btn-copiar.copiado{background:#DFF3E5; border-color:#1C8A4A; color:#1C8A4A;}
 
   .status-msg{font-size:13px; text-align:center; padding:10px; border-radius:10px; margin-top:10px;}
   .status-msg.pending{background:#FFF6E0; color:#8A6100;}
@@ -301,9 +310,15 @@
       <div class="bank-row"><span>Tipo de cuenta</span><span>Cuenta Vista</span></div>
       <div class="bank-row"><span>N° de cuenta</span><span>00-075-84210-95</span></div>
       <div class="bank-row"><span>A nombre de</span><span>Patricia Bravo</span></div>
-      <div class="bank-row"><span>Monto</span><span id="bankMonto">$0</span></div>
       <div class="bank-row" style="border-bottom:none;"><span>Glosa / asunto</span><span id="bankGlosa">EMP-000</span></div>
     </div>
+
+    <div class="monto-box">
+      <div class="label">Total a transferir</div>
+      <div class="num" id="bankMontoGrande">$0</div>
+    </div>
+
+    <button class="btn-secondary btn-copiar" id="btnCopiar">📋 Copiar datos de transferencia</button>
 
     <p style="font-size:12.5px;color:#777;text-align:center;">Importante: pon el código como glosa de la transferencia para que podamos verificarla más rápido.</p>
 
@@ -449,8 +464,10 @@ el("btnGenerar").onclick = async () => {
     stock.queso = data.stock_queso;
 
     el("codigoPedido").textContent = data.codigo;
-    el("bankMonto").textContent = "$" + total.toLocaleString("es-CL");
+    el("bankMontoGrande").textContent = "$" + total.toLocaleString("es-CL");
     el("bankGlosa").textContent = data.codigo;
+
+    el("btnCopiar").onclick = () => copiarDatosTransferencia(data.codigo, total);
 
     el("tiendaCard").classList.add("hidden");
     el("formCard").classList.add("hidden");
@@ -474,6 +491,42 @@ el("btnNuevo").onclick = () => {
   render();
   window.scrollTo({top:0, behavior:"smooth"});
 };
+
+function copiarDatosTransferencia(codigo, total){
+  const texto =
+`Banco: Banco de Chile
+Tipo de cuenta: Cuenta Vista
+N° de cuenta: 00-075-84210-95
+A nombre de: Patricia Bravo
+Monto: $${total.toLocaleString("es-CL")}
+Glosa / asunto: ${codigo}`;
+
+  const btn = el("btnCopiar");
+  const original = btn.textContent;
+  const marcarCopiado = () => {
+    btn.textContent = "✅ ¡Copiado!";
+    btn.classList.add("copiado");
+    setTimeout(() => { btn.textContent = original; btn.classList.remove("copiado"); }, 2000);
+  };
+
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(texto).then(marcarCopiado).catch(() => copiarConFallback(texto, marcarCopiado));
+  } else {
+    copiarConFallback(texto, marcarCopiado);
+  }
+}
+
+function copiarConFallback(texto, onOk){
+  const area = document.createElement("textarea");
+  area.value = texto;
+  area.style.position = "fixed";
+  area.style.opacity = "0";
+  document.body.appendChild(area);
+  area.focus();
+  area.select();
+  try{ document.execCommand("copy"); onOk(); }catch(e){ alert("No se pudo copiar automático, copia los datos manualmente."); }
+  document.body.removeChild(area);
+}
 
 render();
 
