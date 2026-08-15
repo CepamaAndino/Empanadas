@@ -334,18 +334,84 @@ function imprimirVoucher(codigo){
 <style>
   @page { size: 58mm auto; margin: 0; }
   * { box-sizing: border-box; }
-  body{
-    width: 58mm; margin: 0; padding: 4mm 3mm 8mm;
-    font-family: 'Courier New', Courier, monospace; font-size: 11px; color: #000;
+
+  html, body{
+    width: 58mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
   }
-  .centro{ text-align: center; }
-  .logo{ font-family: Arial, sans-serif; font-weight: 900; font-size: 18px; letter-spacing: 1px; }
-  .sub{ font-family: Arial, sans-serif; font-size: 10.5px; font-style: italic; margin: 0 0 6px; }
-  hr{ border: none; border-top: 1px dashed #000; margin: 6px 0; }
-  .fila{ display: flex; justify-content: space-between; margin: 2px 0; }
-  .total{ font-weight: bold; font-size: 13px; }
-  .codigo{ font-weight: bold; font-size: 15px; text-align: center; margin: 6px 0; letter-spacing: 1px; }
-  .etiqueta{ font-size: 9.5px; color: #333; }
+
+  body{
+    width: 54mm !important;
+    margin: 0 !important;
+    padding: 2mm !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    line-height: 1.25 !important;
+    color: #000 !important;
+    background: #fff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .centro{
+    text-align: center;
+    color: #000 !important;
+  }
+
+  .logo{
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-weight: 900 !important;
+    font-size: 19px !important;
+    letter-spacing: .5px;
+    color: #000 !important;
+  }
+
+  .sub{
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 11px !important;
+    font-style: normal !important;
+    font-weight: 700 !important;
+    margin: 0 0 5px;
+    color: #000 !important;
+  }
+
+  hr{
+    border: none;
+    border-top: 2px solid #000 !important;
+    margin: 5px 0;
+  }
+
+  .fila{
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
+    margin: 2px 0;
+    font-weight: 600 !important;
+    color: #000 !important;
+  }
+
+  .total{
+    font-weight: 900 !important;
+    font-size: 14px !important;
+  }
+
+  .codigo{
+    font-weight: 900 !important;
+    font-size: 16px !important;
+    text-align: center;
+    margin: 6px 0;
+    letter-spacing: .5px;
+    color: #000 !important;
+  }
+
+  .etiqueta{
+    font-size: 10.5px !important;
+    font-weight: 700 !important;
+    color: #000 !important;
+  }
 </style>
 </head>
 <body>
@@ -637,18 +703,84 @@ function imprimirVoucherCaja(venta){
 <style>
   @page { size: 58mm auto; margin: 0; }
   * { box-sizing: border-box; }
-  body{
-    width: 58mm; margin: 0; padding: 4mm 3mm 8mm;
-    font-family: 'Courier New', Courier, monospace; font-size: 11px; color: #000;
+
+  html, body{
+    width: 58mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
   }
-  .centro{ text-align: center; }
-  .logo{ font-family: Arial, sans-serif; font-weight: 900; font-size: 18px; letter-spacing: 1px; }
-  .sub{ font-family: Arial, sans-serif; font-size: 10.5px; font-style: italic; margin: 0 0 6px; }
-  hr{ border: none; border-top: 1px dashed #000; margin: 6px 0; }
-  .fila{ display: flex; justify-content: space-between; margin: 2px 0; }
-  .total{ font-weight: bold; font-size: 13px; }
-  .codigo{ font-weight: bold; font-size: 15px; text-align: center; margin: 6px 0; letter-spacing: 1px; }
-  .etiqueta{ font-size: 9.5px; color: #333; }
+
+  body{
+    width: 54mm !important;
+    margin: 0 !important;
+    padding: 2mm !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    line-height: 1.25 !important;
+    color: #000 !important;
+    background: #fff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .centro{
+    text-align: center;
+    color: #000 !important;
+  }
+
+  .logo{
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-weight: 900 !important;
+    font-size: 19px !important;
+    letter-spacing: .5px;
+    color: #000 !important;
+  }
+
+  .sub{
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 11px !important;
+    font-style: normal !important;
+    font-weight: 700 !important;
+    margin: 0 0 5px;
+    color: #000 !important;
+  }
+
+  hr{
+    border: none;
+    border-top: 2px solid #000 !important;
+    margin: 5px 0;
+  }
+
+  .fila{
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
+    margin: 2px 0;
+    font-weight: 600 !important;
+    color: #000 !important;
+  }
+
+  .total{
+    font-weight: 900 !important;
+    font-size: 14px !important;
+  }
+
+  .codigo{
+    font-weight: 900 !important;
+    font-size: 16px !important;
+    text-align: center;
+    margin: 6px 0;
+    letter-spacing: .5px;
+    color: #000 !important;
+  }
+
+  .etiqueta{
+    font-size: 10.5px !important;
+    font-weight: 700 !important;
+    color: #000 !important;
+  }
 </style>
 </head>
 <body>
