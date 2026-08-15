@@ -25,7 +25,6 @@ const CARPETA_DRIVE_ID = ""; // opcional: ID de carpeta de Drive para los report
 const STOCK_INICIAL_PINO = 200;
 const STOCK_INICIAL_QUESO = 50;
 const PRECIO = 3500;
-const PROMO_PAR = 6000;
 
 function doGet(e) {
   const accion = e.parameter.action;
@@ -115,9 +114,7 @@ function crearPedido(body) {
 
   // recalculamos el total en servidor (no confiamos ciegamente en el cliente)
   const totalUnidades = cantPino + cantQueso;
-  const pares = Math.floor(totalUnidades / 2);
-  const sueltas = totalUnidades % 2;
-  const total = pares * PROMO_PAR + sueltas * PRECIO;
+  const total = totalUnidades * PRECIO;
 
   // reservamos stock de inmediato (misma lógica que Bingo Andino: se descuenta al pedir,
   // y se restaura si el pago es rechazado)
@@ -226,9 +223,7 @@ function ventaPresencial(body) {
   }
 
   const totalUnidades = cantPino + cantQueso;
-  const pares = Math.floor(totalUnidades / 2);
-  const sueltas = totalUnidades % 2;
-  const total = pares * PROMO_PAR + sueltas * PRECIO;
+  const total = totalUnidades * PRECIO;
 
   const nuevoPino = stock.pino - cantPino;
   const nuevoQueso = stock.queso - cantQueso;

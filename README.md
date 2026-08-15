@@ -57,8 +57,8 @@ empanadas-guayacan-2026/
 
 - **Stock**: 200 pino / 50 queso, se descuenta apenas alguien genera un pedido
   (igual que las cartillas del bingo se reservaban al elegir el número).
-- **Promoción 2x$6.000**: se calcula automático sobre el total de unidades
-  (mezclando pino y queso), sin importar la combinación.
+- **Precio**: $3.500 por empanada, sin importar el tipo (pino o queso). Sin
+  promociones.
 - **Código correlativo**: `EMP-001`, `EMP-002`, etc.
 - **Verificación**: en `admin.html` la tesorería revisa cada transferencia y
   aprieta "Verificar" → se abre WhatsApp solo con el mensaje de aprobación
@@ -81,7 +81,7 @@ empanadas-guayacan-2026/
   CSV con todos los pedidos y lo guarda en la carpeta que configuraste.
 - **Caja rápida (venta presencial)**: pestaña "💵 Caja rápida" en `admin.html`
   para vender directo en el stand, del mismo stock. Elige pino/queso, calcula
-  el total con la promo, y para efectivo tiene botones "Exacto / $5.000 /
+  el total ($3.500 c/u), y para efectivo tiene botones "Exacto / $5.000 /
   $10.000 / $20.000" que calculan el vuelto solos. Cada venta queda guardada
   en una hoja nueva **"VentaPresencial"** dentro del mismo Sheet (se crea
   sola la primera vez), con código `CAJA-001`, fecha, hora, cantidades,

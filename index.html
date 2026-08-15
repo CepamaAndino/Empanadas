@@ -136,13 +136,6 @@
   .stepper button:disabled{background:#C9C9C9; cursor:not-allowed;}
   .stepper .qty{width:26px; text-align:center; font-weight:800; font-size:16px;}
 
-  .promo-banner{
-    background:linear-gradient(90deg, var(--rojo), #b5211a);
-    color:#fff; border-radius:12px; padding:10px 14px; font-size:13px; font-weight:700;
-    text-align:center; margin-bottom:14px;
-    box-shadow:0 6px 16px rgba(213,43,30,0.25);
-  }
-
   .totals{
     display:flex; justify-content:space-between; align-items:baseline; padding-top:10px;
     border-top:2px dashed var(--linea); margin-top:6px;
@@ -238,8 +231,6 @@
 <main>
 
   <div class="card" id="tiendaCard">
-    <div class="promo-banner">🥟 Promoción: 2 empanadas x $6.000 (mezcla pino y queso, se aplica automático)</div>
-
     <div class="prod pino">
       <div class="icon">🥟</div>
       <div class="info">
@@ -335,7 +326,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwCmQEoR0P5I2fwD0FKHjx1
 // ===================================================
 
 const PRECIO = 3500;
-const PROMO_PAR = 6000;
 
 let stock = { pino: 200, queso: 50 };
 let qty = { pino: 0, queso: 0 };
@@ -364,11 +354,8 @@ function renderStock(){
 
 function calcTotal(){
   const total_unidades = qty.pino + qty.queso;
-  const pares = Math.floor(total_unidades / 2);
-  const sueltas = total_unidades % 2;
-  const total = pares * PROMO_PAR + sueltas * PRECIO;
-  const sinPromo = total_unidades * PRECIO;
-  return { total, ahorro: sinPromo - total, total_unidades };
+  const total = total_unidades * PRECIO;
+  return { total, total_unidades };
 }
 
 function render(){
@@ -378,14 +365,8 @@ function render(){
   el("menosQueso").disabled = qty.queso <= 0;
   renderStock();
 
-  const { total, ahorro, total_unidades } = calcTotal();
+  const { total, total_unidades } = calcTotal();
   el("totalAmount").textContent = "$" + total.toLocaleString("es-CL");
-  if(ahorro > 0){
-    el("saveTxt").textContent = "Ahorras $" + ahorro.toLocaleString("es-CL");
-    el("saveTxt").classList.remove("hidden");
-  } else {
-    el("saveTxt").classList.add("hidden");
-  }
 
   const btn = el("btnGenerar");
   if(total_unidades === 0){
