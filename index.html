@@ -95,6 +95,11 @@
     transition:.2s;
   }
   .stage-toggle button.active{background:#fff; color:var(--azul);}
+  .stage-toggle button:disabled{color:#7C8CB0; cursor:not-allowed;}
+
+  .etapa-nota{
+    margin-top:10px; font-size:11.5px; color:#FFD9D5; font-weight:600;
+  }
 
   main{max-width:640px; margin:-34px auto 0; padding:0 16px 40px; position:relative; z-index:2;}
 
@@ -226,6 +231,7 @@
     <button type="button" id="btnPreventa" class="active">Preventa</button>
     <button type="button" id="btnInterna">Venta interna</button>
   </div>
+  <div class="etapa-nota hidden" id="etapaNota"></div>
 </div>
 
 <main>
@@ -333,7 +339,21 @@ let etapa = "Preventa";
 
 const el = id => document.getElementById(id);
 
-el("btnPreventa").onclick = () => setEtapa("Preventa");
+// La preventa cierra sola el viernes 4 de septiembre 2026 a las 23:59 (hora Chile)
+const FECHA_LIMITE_PREVENTA = new Date("2026-09-04T23:59:59-04:00");
+const preventaCerrada = new Date() > FECHA_LIMITE_PREVENTA;
+
+if(preventaCerrada){
+  etapa = "Venta interna";
+  el("btnPreventa").disabled = true;
+  el("btnPreventa").classList.remove("active");
+  el("btnInterna").classList.add("active");
+  const nota = el("etapaNota");
+  nota.textContent = "La preventa cerró el viernes 4 de septiembre. Ahora estás comprando en venta interna.";
+  nota.classList.remove("hidden");
+}
+
+el("btnPreventa").onclick = () => { if(!preventaCerrada) setEtapa("Preventa"); };
 el("btnInterna").onclick = () => setEtapa("Venta interna");
 function setEtapa(e){
   etapa = e;
