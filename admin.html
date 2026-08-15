@@ -348,12 +348,14 @@ function imprimirVoucher(codigo){
     padding: 2mm !important;
     font-family: Arial, Helvetica, sans-serif !important;
     font-size: 12px !important;
-    font-weight: 600 !important;
-    line-height: 1.25 !important;
+    font-weight: 900 !important;
+    line-height: 1.3 !important;
     color: #000 !important;
     background: #fff !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    -webkit-text-stroke: 0.4px #000;
+    text-shadow: 0.3px 0 0 currentColor, -0.3px 0 0 currentColor, 0 0.3px 0 currentColor, 0 -0.3px 0 currentColor;
   }
 
   .centro{
@@ -364,23 +366,24 @@ function imprimirVoucher(codigo){
   .logo{
     font-family: Arial, Helvetica, sans-serif !important;
     font-weight: 900 !important;
-    font-size: 19px !important;
+    font-size: 20px !important;
     letter-spacing: .5px;
     color: #000 !important;
+    -webkit-text-stroke: 0.6px #000;
   }
 
   .sub{
     font-family: Arial, Helvetica, sans-serif !important;
-    font-size: 11px !important;
+    font-size: 11.5px !important;
     font-style: normal !important;
-    font-weight: 700 !important;
+    font-weight: 900 !important;
     margin: 0 0 5px;
     color: #000 !important;
   }
 
   hr{
     border: none;
-    border-top: 2px solid #000 !important;
+    border-top: 3px solid #000 !important;
     margin: 5px 0;
   }
 
@@ -389,27 +392,29 @@ function imprimirVoucher(codigo){
     justify-content: space-between;
     gap: 4px;
     margin: 2px 0;
-    font-weight: 600 !important;
+    font-weight: 900 !important;
     color: #000 !important;
   }
 
   .total{
     font-weight: 900 !important;
-    font-size: 14px !important;
+    font-size: 15px !important;
+    -webkit-text-stroke: 0.5px #000;
   }
 
   .codigo{
     font-weight: 900 !important;
-    font-size: 16px !important;
+    font-size: 17px !important;
     text-align: center;
     margin: 6px 0;
     letter-spacing: .5px;
     color: #000 !important;
+    -webkit-text-stroke: 0.6px #000;
   }
 
   .etiqueta{
     font-size: 10.5px !important;
-    font-weight: 700 !important;
+    font-weight: 900 !important;
     color: #000 !important;
   }
 </style>
@@ -714,12 +719,14 @@ function imprimirVoucherCaja(venta){
     padding: 2mm !important;
     font-family: Arial, Helvetica, sans-serif !important;
     font-size: 12px !important;
-    font-weight: 600 !important;
-    line-height: 1.25 !important;
+    font-weight: 900 !important;
+    line-height: 1.3 !important;
     color: #000 !important;
     background: #fff !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    -webkit-text-stroke: 0.4px #000;
+    text-shadow: 0.3px 0 0 currentColor, -0.3px 0 0 currentColor, 0 0.3px 0 currentColor, 0 -0.3px 0 currentColor;
   }
 
   .centro{
@@ -730,23 +737,24 @@ function imprimirVoucherCaja(venta){
   .logo{
     font-family: Arial, Helvetica, sans-serif !important;
     font-weight: 900 !important;
-    font-size: 19px !important;
+    font-size: 20px !important;
     letter-spacing: .5px;
     color: #000 !important;
+    -webkit-text-stroke: 0.6px #000;
   }
 
   .sub{
     font-family: Arial, Helvetica, sans-serif !important;
-    font-size: 11px !important;
+    font-size: 11.5px !important;
     font-style: normal !important;
-    font-weight: 700 !important;
+    font-weight: 900 !important;
     margin: 0 0 5px;
     color: #000 !important;
   }
 
   hr{
     border: none;
-    border-top: 2px solid #000 !important;
+    border-top: 3px solid #000 !important;
     margin: 5px 0;
   }
 
@@ -755,27 +763,29 @@ function imprimirVoucherCaja(venta){
     justify-content: space-between;
     gap: 4px;
     margin: 2px 0;
-    font-weight: 600 !important;
+    font-weight: 900 !important;
     color: #000 !important;
   }
 
   .total{
     font-weight: 900 !important;
-    font-size: 14px !important;
+    font-size: 15px !important;
+    -webkit-text-stroke: 0.5px #000;
   }
 
   .codigo{
     font-weight: 900 !important;
-    font-size: 16px !important;
+    font-size: 17px !important;
     text-align: center;
     margin: 6px 0;
     letter-spacing: .5px;
     color: #000 !important;
+    -webkit-text-stroke: 0.6px #000;
   }
 
   .etiqueta{
     font-size: 10.5px !important;
-    font-weight: 700 !important;
+    font-weight: 900 !important;
     color: #000 !important;
   }
 </style>
