@@ -310,28 +310,19 @@ function enviarWhatsapp(tipo, codigo){
   window.open(`https://wa.me/${numero}?text=${texto}`, "_blank");
 }
 
-function imprimirVoucher(codigo){
-  const p = pedidos.find(x => x.codigo === codigo);
-  if(!p) return;
+// ============ VOUCHER 58mm — estilo compartido ============
+const ICONOS_VOUCHER = {
+  persona: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>`,
+  curso: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8l10-5 10 5-10 5-10-5z"/><path d="M6 10.5V16c0 1.5 3 3 6 3s6-1.5 6-3v-5.5"/></svg>`,
+  calendario: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>`,
+  reloj: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>`,
+  pago: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20M6 15h4"/></svg>`,
+  corazon: `<svg viewBox="0 0 24 24" width="14" height="14" fill="#1a1a1a" stroke="none"><path d="M12 21s-7-4.35-9.5-8.5C1 9 2.5 5.5 6 5c2 0 3.5 1.2 4 2.5.5-1.3 2-2.5 4-2.5 3.5.5 5 4 3.5 7.5C19 16.65 12 21 12 21z"/></svg>`,
+  empanada: `<svg viewBox="0 0 60 40" width="34" height="24" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"><path d="M15 5l2 6M22 3l1.5 6.5M30 2v7M38 3l-1.5 6.5M45 5l-2 6"/><path d="M8 22c0-9 10-16 22-16s22 7 22 16" fill="none"/><path d="M6 22h48" stroke-dasharray="1.5 3"/></svg>`
+};
 
-  const ahora = new Date();
-  const fecha = ahora.toLocaleDateString("es-CL");
-  const hora = ahora.toLocaleTimeString("es-CL", { hour: "2-digit", minute: "2-digit" });
-
-  const lineas = [];
-  if(Number(p.cantidad_pino) > 0) lineas.push({ nombre: "Empanada Pino", cant: p.cantidad_pino });
-  if(Number(p.cantidad_queso) > 0) lineas.push({ nombre: "Empanada Queso", cant: p.cantidad_queso });
-
-  const filasProductos = lineas.map(l =>
-    `<div class="fila"><span>${l.nombre} x${l.cant}</span></div>`
-  ).join("");
-
-  const html = `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Voucher ${p.codigo}</title>
-<style>
+function estiloVoucher(){
+  return `
   @page { size: 58mm auto; margin: 0; }
   * { box-sizing: border-box; }
 
@@ -345,96 +336,133 @@ function imprimirVoucher(codigo){
   body{
     width: 54mm !important;
     margin: 0 !important;
-    padding: 2mm !important;
-    font-family: Arial, Helvetica, sans-serif !important;
-    font-size: 12px !important;
-    font-weight: 600 !important;
-    line-height: 1.3 !important;
-    color: #000 !important;
+    padding: 3mm 2.5mm !important;
+    font-family: 'Poppins', Arial, Helvetica, sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 400 !important;
+    line-height: 1.35 !important;
+    color: #1a1a1a !important;
     background: #fff !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-    text-shadow: 0.3px 0 0 currentColor, -0.3px 0 0 currentColor, 0 0.3px 0 currentColor, 0 -0.3px 0 currentColor;
   }
 
-  .centro{
-    text-align: center;
-    color: #000 !important;
+  .centro{ text-align: center; }
+
+  .logo-titulo{
+    font-weight: 800 !important;
+    font-size: 19px !important;
+    letter-spacing: 1px;
+    margin-top: 3px;
   }
 
-  .logo{
-    font-family: Arial, Helvetica, sans-serif !important;
+  .logo-sub{
+    font-size: 9.5px !important;
     font-weight: 600 !important;
-    font-size: 20px !important;
-    letter-spacing: .5px;
-    color: #000 !important;
+    letter-spacing: 2.5px;
+    color: #444 !important;
+    margin-top: 1px;
   }
 
-  .sub{
-    font-family: Arial, Helvetica, sans-serif !important;
-    font-size: 11.5px !important;
-    font-style: normal !important;
-    font-weight: 600 !important;
-    margin: 0 0 5px;
-    color: #000 !important;
+  .dotted{ border: none; border-top: 1.3px dotted #999 !important; margin: 8px 0; }
+  .solida{ border: none; border-top: 1.4px solid #1a1a1a !important; margin: 7px 0; }
+
+  .codigo-badge{
+    display: inline-block; background: #1a1a1a; color: #fff !important;
+    font-weight: 700 !important; font-size: 13px !important; letter-spacing: 1px;
+    padding: 5px 16px; border-radius: 999px; margin: 4px 0 10px;
   }
 
-  hr{
-    border: none;
-    border-top: 3px solid #000 !important;
-    margin: 5px 0;
-  }
+  .icon-row{ display:flex; align-items:flex-start; gap:7px; margin: 7px 0; text-align:left; }
+  .icon-row .txt .etiqueta{ font-weight: 600 !important; font-size: 11px !important; }
+  .icon-row .txt .valor{ font-weight: 400 !important; font-size: 11px !important; color: #333 !important; }
 
-  .fila{
-    display: flex;
-    justify-content: space-between;
-    gap: 4px;
-    margin: 2px 0;
-    font-weight: 600 !important;
-    color: #000 !important;
-  }
+  .icon-row-linea{ display:flex; align-items:center; justify-content:space-between; gap:6px; margin: 5px 0; }
+  .icon-row-linea .izq{ display:flex; align-items:center; gap:6px; font-weight: 500 !important; font-size: 10.5px !important; }
+  .icon-row-linea .der{ font-weight: 600 !important; font-size: 10.5px !important; }
 
-  .total{
-    font-weight: 600 !important;
-    font-size: 15px !important;
+  .item-fila{ display:flex; align-items:center; gap:7px; margin: 6px 0; }
+  .item-badge{
+    flex-shrink:0; width:20px; height:20px; border-radius:50%; background:#1a1a1a;
+    color:#fff !important; font-size:9.5px !important; font-weight:700 !important;
+    display:flex; align-items:center; justify-content:center;
   }
+  .item-nombre{ flex:1; font-weight:400 !important; font-size:11px !important; }
+  .item-precio{ font-weight:600 !important; font-size:11px !important; }
 
-  .codigo{
-    font-weight: 600 !important;
-    font-size: 17px !important;
-    text-align: center;
-    margin: 6px 0;
-    letter-spacing: .5px;
-    color: #000 !important;
-  }
+  .fila-total{ display:flex; justify-content:space-between; align-items:center; }
+  .fila-total .label{ font-weight:700 !important; font-size:13px !important; letter-spacing:.5px; }
+  .fila-total .monto{ font-weight:800 !important; font-size:15px !important; }
 
-  .etiqueta{
-    font-size: 10.5px !important;
-    font-weight: 600 !important;
-    color: #000 !important;
-  }
-</style>
+  .footer-sub{ font-size: 10px !important; font-weight: 600 !important; color: #444 !important; }
+  `;
+}
+
+function imprimirVoucher(codigo){
+  const p = pedidos.find(x => x.codigo === codigo);
+  if(!p) return;
+
+  const ahora = new Date();
+  const fecha = ahora.toLocaleDateString("es-CL");
+  const hora = ahora.toLocaleTimeString("es-CL", { hour: "2-digit", minute: "2-digit" });
+
+  const lineas = [];
+  if(Number(p.cantidad_pino) > 0) lineas.push({ nombre: "Empanada Pino", cant: p.cantidad_pino });
+  if(Number(p.cantidad_queso) > 0) lineas.push({ nombre: "Empanada Queso", cant: p.cantidad_queso });
+
+  const filasProductos = lineas.map((l, i) => `
+    <div class="item-fila">
+      <div class="item-badge">x${l.cant}</div>
+      <div class="item-nombre">${l.nombre}</div>
+      <div class="item-precio">$${(l.cant * 3500).toLocaleString("es-CL")}</div>
+    </div>
+    ${i < lineas.length - 1 ? '<hr class="dotted">' : ''}
+  `).join("");
+
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Voucher ${p.codigo}</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>${estiloVoucher()}</style>
 </head>
 <body>
   <div class="centro">
-    <div class="logo">GUAYACÁN</div>
-    <div class="sub">Empanadas</div>
+    ${ICONOS_VOUCHER.empanada}
+    <div class="logo-titulo">GUAYACÁN</div>
+    <div class="logo-sub">— EMPANADAS —</div>
   </div>
-  <hr>
-  <div class="codigo">${p.codigo}</div>
-  <div class="etiqueta">Alumno/a</div>
-  <div>${p.nombre}</div>
-  <div class="etiqueta" style="margin-top:4px;">Curso</div>
-  <div>${p.curso}</div>
-  <hr>
+  <hr class="dotted">
+  <div class="centro"><span class="codigo-badge">${p.codigo}</span></div>
+
+  <div class="icon-row">
+    ${ICONOS_VOUCHER.persona}
+    <div class="txt"><div class="etiqueta">Alumno/a</div><div class="valor">${p.nombre}</div></div>
+  </div>
+  <div class="icon-row">
+    ${ICONOS_VOUCHER.curso}
+    <div class="txt"><div class="etiqueta">Curso</div><div class="valor">${p.curso}</div></div>
+  </div>
+
+  <hr class="dotted">
   ${filasProductos}
-  <hr>
-  <div class="fila total"><span>TOTAL</span><span>$${Number(p.total).toLocaleString("es-CL")}</span></div>
-  <hr>
-  <div class="fila"><span>Fecha entrega</span><span>${fecha}</span></div>
-  <div class="fila"><span>Hora entrega</span><span>${hora}</span></div>
-  <hr>
-  <div class="centro sub">¡Gracias por tu compra!</div>
+  <hr class="solida">
+  <div class="fila-total"><span class="label">TOTAL</span><span class="monto">$${Number(p.total).toLocaleString("es-CL")}</span></div>
+  <hr class="solida">
+
+  <div class="icon-row-linea">
+    <span class="izq">${ICONOS_VOUCHER.calendario} Fecha entrega</span>
+    <span class="der">${fecha}</span>
+  </div>
+  <div class="icon-row-linea">
+    <span class="izq">${ICONOS_VOUCHER.reloj} Hora entrega</span>
+    <span class="der">${hora}</span>
+  </div>
+  <hr class="solida">
+
+  <div class="centro">${ICONOS_VOUCHER.corazon}</div>
+  <div class="centro footer-sub">— ¡Gracias por tu compra! —</div>
 </body>
 </html>`;
 
@@ -686,125 +714,65 @@ function imprimirVoucherCaja(venta){
   const lineas = [];
   if(Number(venta.cantidad_pino) > 0) lineas.push({ nombre: "Empanada Pino", cant: venta.cantidad_pino });
   if(Number(venta.cantidad_queso) > 0) lineas.push({ nombre: "Empanada Queso", cant: venta.cantidad_queso });
-  const filasProductos = lineas.map(l => `<div class="fila"><span>${l.nombre} x${l.cant}</span></div>`).join("");
 
-  const filasPago = venta.medioPago === "Efectivo"
-    ? `<div class="fila"><span>Recibido</span><span>$${Number(venta.montoRecibido).toLocaleString("es-CL")}</span></div>
-       <div class="fila"><span>Vuelto</span><span>$${Number(venta.vuelto).toLocaleString("es-CL")}</span></div>`
-    : "";
+  const filasProductos = lineas.map((l, i) => `
+    <div class="item-fila">
+      <div class="item-badge">x${l.cant}</div>
+      <div class="item-nombre">${l.nombre}</div>
+      <div class="item-precio">$${(l.cant * 3500).toLocaleString("es-CL")}</div>
+    </div>
+    ${i < lineas.length - 1 ? '<hr class="dotted">' : ''}
+  `).join("");
+
+  const filasPago = venta.medioPago === "Efectivo" ? `
+    <div class="icon-row-linea"><span class="izq">Recibido</span><span class="der">$${Number(venta.montoRecibido).toLocaleString("es-CL")}</span></div>
+    <div class="icon-row-linea"><span class="izq">Vuelto</span><span class="der">$${Number(venta.vuelto).toLocaleString("es-CL")}</span></div>
+  ` : "";
 
   const html = `<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Voucher ${venta.codigo}</title>
-<style>
-  @page { size: 58mm auto; margin: 0; }
-  * { box-sizing: border-box; }
-
-  html, body{
-    width: 58mm !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #fff !important;
-  }
-
-  body{
-    width: 54mm !important;
-    margin: 0 !important;
-    padding: 2mm !important;
-    font-family: Arial, Helvetica, sans-serif !important;
-    font-size: 12px !important;
-    font-weight: 900 !important;
-    line-height: 1.3 !important;
-    color: #000 !important;
-    background: #fff !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-    -webkit-text-stroke: 0.4px #000;
-    text-shadow: 0.3px 0 0 currentColor, -0.3px 0 0 currentColor, 0 0.3px 0 currentColor, 0 -0.3px 0 currentColor;
-  }
-
-  .centro{
-    text-align: center;
-    color: #000 !important;
-  }
-
-  .logo{
-    font-family: Arial, Helvetica, sans-serif !important;
-    font-weight: 900 !important;
-    font-size: 20px !important;
-    letter-spacing: .5px;
-    color: #000 !important;
-    -webkit-text-stroke: 0.6px #000;
-  }
-
-  .sub{
-    font-family: Arial, Helvetica, sans-serif !important;
-    font-size: 11.5px !important;
-    font-style: normal !important;
-    font-weight: 900 !important;
-    margin: 0 0 5px;
-    color: #000 !important;
-  }
-
-  hr{
-    border: none;
-    border-top: 3px solid #000 !important;
-    margin: 5px 0;
-  }
-
-  .fila{
-    display: flex;
-    justify-content: space-between;
-    gap: 4px;
-    margin: 2px 0;
-    font-weight: 900 !important;
-    color: #000 !important;
-  }
-
-  .total{
-    font-weight: 900 !important;
-    font-size: 15px !important;
-    -webkit-text-stroke: 0.5px #000;
-  }
-
-  .codigo{
-    font-weight: 900 !important;
-    font-size: 17px !important;
-    text-align: center;
-    margin: 6px 0;
-    letter-spacing: .5px;
-    color: #000 !important;
-    -webkit-text-stroke: 0.6px #000;
-  }
-
-  .etiqueta{
-    font-size: 10.5px !important;
-    font-weight: 900 !important;
-    color: #000 !important;
-  }
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>${estiloVoucher()}</style>
 </head>
 <body>
   <div class="centro">
-    <div class="logo">GUAYACÁN</div>
-    <div class="sub">Empanadas</div>
+    ${ICONOS_VOUCHER.empanada}
+    <div class="logo-titulo">GUAYACÁN</div>
+    <div class="logo-sub">— EMPANADAS —</div>
   </div>
-  <hr>
-  <div class="codigo">${venta.codigo}</div>
-  <div class="etiqueta">Venta presencial · stand</div>
-  <hr>
+  <hr class="dotted">
+  <div class="centro"><span class="codigo-badge">${venta.codigo}</span></div>
+
+  <div class="icon-row">
+    ${ICONOS_VOUCHER.pago}
+    <div class="txt"><div class="etiqueta">Venta presencial</div><div class="valor">Stand Guayacán</div></div>
+  </div>
+
+  <hr class="dotted">
   ${filasProductos}
-  <hr>
-  <div class="fila total"><span>TOTAL</span><span>$${Number(venta.total).toLocaleString("es-CL")}</span></div>
-  <div class="fila"><span>Medio de pago</span><span>${venta.medioPago}</span></div>
+  <hr class="solida">
+  <div class="fila-total"><span class="label">TOTAL</span><span class="monto">$${Number(venta.total).toLocaleString("es-CL")}</span></div>
+  <hr class="solida">
+
+  <div class="icon-row-linea"><span class="izq">Medio de pago</span><span class="der">${venta.medioPago}</span></div>
   ${filasPago}
-  <hr>
-  <div class="fila"><span>Fecha</span><span>${fecha}</span></div>
-  <div class="fila"><span>Hora</span><span>${hora}</span></div>
-  <hr>
-  <div class="centro sub">¡Gracias por tu compra!</div>
+  <hr class="solida">
+
+  <div class="icon-row-linea">
+    <span class="izq">${ICONOS_VOUCHER.calendario} Fecha</span>
+    <span class="der">${fecha}</span>
+  </div>
+  <div class="icon-row-linea">
+    <span class="izq">${ICONOS_VOUCHER.reloj} Hora</span>
+    <span class="der">${hora}</span>
+  </div>
+  <hr class="solida">
+
+  <div class="centro">${ICONOS_VOUCHER.corazon}</div>
+  <div class="centro footer-sub">— ¡Gracias por tu compra! —</div>
 </body>
 </html>`;
 
