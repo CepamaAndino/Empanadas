@@ -312,13 +312,13 @@ function enviarWhatsapp(tipo, codigo){
 
 // ============ VOUCHER 58mm — estilo compartido ============
 const ICONOS_VOUCHER = {
-  persona: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>`,
-  curso: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8l10-5 10 5-10 5-10-5z"/><path d="M6 10.5V16c0 1.5 3 3 6 3s6-1.5 6-3v-5.5"/></svg>`,
-  calendario: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>`,
-  reloj: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>`,
-  pago: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20M6 15h4"/></svg>`,
-  corazon: `<svg viewBox="0 0 24 24" width="14" height="14" fill="#000" stroke="none"><path d="M12 21s-7-4.35-9.5-8.5C1 9 2.5 5.5 6 5c2 0 3.5 1.2 4 2.5.5-1.3 2-2.5 4-2.5 3.5.5 5 4 3.5 7.5C19 16.65 12 21 12 21z"/></svg>`,
-  empanada: `<svg viewBox="0 0 60 40" width="34" height="24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"><path d="M15 5l2 6M22 3l1.5 6.5M30 2v7M38 3l-1.5 6.5M45 5l-2 6"/><path d="M8 22c0-9 10-16 22-16s22 7 22 16" fill="none"/><path d="M6 22h48" stroke-dasharray="1.5 3"/></svg>`
+  persona: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#000" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>`,
+  curso: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#000" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8l10-5 10 5-10 5-10-5z"/><path d="M6 10.5V16c0 1.5 3 3 6 3s6-1.5 6-3v-5.5"/></svg>`,
+  calendario: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#000" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>`,
+  reloj: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#000" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>`,
+  pago: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#000" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20M6 15h4"/></svg>`,
+  corazon: `<svg viewBox="0 0 24 24" width="16" height="16" fill="#000" stroke="none"><path d="M12 21s-7-4.35-9.5-8.5C1 9 2.5 5.5 6 5c2 0 3.5 1.2 4 2.5.5-1.3 2-2.5 4-2.5 3.5.5 5 4 3.5 7.5C19 16.65 12 21 12 21z"/></svg>`,
+  empanada: `<svg viewBox="0 0 60 40" width="34" height="24" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round"><path d="M15 5l2 6M22 3l1.5 6.5M30 2v7M38 3l-1.5 6.5M45 5l-2 6"/><path d="M8 22c0-9 10-16 22-16s22 7 22 16" fill="none"/><path d="M6 22h48" stroke-width="2" stroke-dasharray="1.5 3"/></svg>`
 };
 
 function estiloVoucher(){
@@ -338,9 +338,9 @@ function estiloVoucher(){
     margin: 0 !important;
     padding: 3mm 2.5mm !important;
     font-family: 'Poppins', Arial, Helvetica, sans-serif !important;
-    font-size: 12px !important;
-    font-weight: 500 !important;
-    line-height: 1.4 !important;
+    font-size: 12.5px !important;
+    font-weight: 700 !important;
+    line-height: 1.45 !important;
     color: #000 !important;
     background: #fff !important;
     -webkit-print-color-adjust: exact !important;
@@ -355,7 +355,7 @@ function estiloVoucher(){
   .centro{ text-align: center; }
 
   .logo-titulo{
-    font-weight: 800 !important;
+    font-weight: 900 !important;
     font-size: 20px !important;
     letter-spacing: 1px;
     margin-top: 3px;
@@ -363,44 +363,44 @@ function estiloVoucher(){
   }
 
   .logo-sub{
-    font-size: 10px !important;
-    font-weight: 700 !important;
-    letter-spacing: 2.5px;
+    font-size: 10.5px !important;
+    font-weight: 800 !important;
+    letter-spacing: 2px;
     color: #000 !important;
     margin-top: 1px;
   }
 
-  .dotted{ border: none; border-top: 1.5px dotted #000 !important; margin: 8px 0; }
-  .solida{ border: none; border-top: 1.6px solid #000 !important; margin: 7px 0; }
+  .dotted{ border: none; border-top: 2px dashed #000 !important; margin: 8px 0; }
+  .solida{ border: none; border-top: 2.2px solid #000 !important; margin: 7px 0; }
 
   .codigo-badge{
     display: inline-block; background: #000 !important; color: #fff !important;
-    font-weight: 700 !important; font-size: 13px !important; letter-spacing: 1px;
+    font-weight: 800 !important; font-size: 13.5px !important; letter-spacing: 1px;
     padding: 5px 16px; border-radius: 999px; margin: 4px 0 10px;
   }
 
   .icon-row{ display:flex; align-items:flex-start; gap:7px; margin: 7px 0; text-align:left; }
-  .icon-row .txt .etiqueta{ font-weight: 700 !important; font-size: 11.5px !important; color: #000 !important; }
-  .icon-row .txt .valor{ font-weight: 500 !important; font-size: 11.5px !important; color: #000 !important; }
+  .icon-row .txt .etiqueta{ font-weight: 800 !important; font-size: 11.5px !important; color: #000 !important; }
+  .icon-row .txt .valor{ font-weight: 700 !important; font-size: 11.5px !important; color: #000 !important; }
 
   .icon-row-linea{ display:flex; align-items:center; justify-content:space-between; gap:6px; margin: 5px 0; }
-  .icon-row-linea .izq{ display:flex; align-items:center; gap:6px; font-weight: 600 !important; font-size: 11px !important; color: #000 !important; }
-  .icon-row-linea .der{ font-weight: 700 !important; font-size: 11px !important; color: #000 !important; }
+  .icon-row-linea .izq{ display:flex; align-items:center; gap:6px; font-weight: 700 !important; font-size: 11px !important; color: #000 !important; }
+  .icon-row-linea .der{ font-weight: 800 !important; font-size: 11px !important; color: #000 !important; }
 
   .item-fila{ display:flex; align-items:center; gap:7px; margin: 6px 0; }
   .item-badge{
-    flex-shrink:0; width:20px; height:20px; border-radius:50%; background:#000 !important;
-    color:#fff !important; font-size:9.5px !important; font-weight:700 !important;
+    flex-shrink:0; width:21px; height:21px; border-radius:50%; background:#000 !important;
+    color:#fff !important; font-size:10px !important; font-weight:800 !important;
     display:flex; align-items:center; justify-content:center;
   }
-  .item-nombre{ flex:1; font-weight:500 !important; font-size:11.5px !important; color: #000 !important; }
-  .item-precio{ font-weight:700 !important; font-size:11.5px !important; color: #000 !important; }
+  .item-nombre{ flex:1; font-weight:700 !important; font-size:11.5px !important; color: #000 !important; }
+  .item-precio{ font-weight:800 !important; font-size:11.5px !important; color: #000 !important; }
 
   .fila-total{ display:flex; justify-content:space-between; align-items:center; }
-  .fila-total .label{ font-weight:800 !important; font-size:13.5px !important; letter-spacing:.5px; color: #000 !important; }
-  .fila-total .monto{ font-weight:800 !important; font-size:16px !important; color: #000 !important; }
+  .fila-total .label{ font-weight:900 !important; font-size:14px !important; letter-spacing:.5px; color: #000 !important; }
+  .fila-total .monto{ font-weight:900 !important; font-size:16.5px !important; color: #000 !important; }
 
-  .footer-sub{ font-size: 10.5px !important; font-weight: 700 !important; color: #000 !important; }
+  .footer-sub{ font-size: 11px !important; font-weight: 800 !important; color: #000 !important; }
   `;
 }
 
