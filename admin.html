@@ -302,9 +302,9 @@ function enviarWhatsapp(tipo, codigo){
   let texto = "";
 
   if(tipo === "comprobante"){
-    texto = `Hola!  Este es tu comprobante de pedido de Empanadas Guayacán 2026.%0A%0ACódigo: ${p.codigo}%0AAlumno/a: ${p.nombre}%0ACurso: ${p.curso}%0APino: ${p.cantidad_pino} · Queso: ${p.cantidad_queso}%0ATotal: $${Number(p.total).toLocaleString("es-CL")}%0A%0ATransfiere a Banco de Chile, Cuenta Vista 00-075-84210-95, a nombre de Patricia Bravo, usando tu código ${p.codigo} como glosa.%0A%0AApenas verifiquemos tu pago te avisamos para que retires en el stand. ¡Gracias por tu compra!`;
+    texto = `Hola! 👋 Este es tu comprobante de pedido de Empanadas Guayacán 2026.%0A%0ACódigo: ${p.codigo}%0AAlumno/a: ${p.nombre}%0ACurso: ${p.curso}%0APino: ${p.cantidad_pino} · Queso: ${p.cantidad_queso}%0ATotal: $${Number(p.total).toLocaleString("es-CL")}%0A%0ATransfiere a Banco de Chile, Cuenta Vista 00-075-84210-95, a nombre de Patricia Bravo, usando tu código ${p.codigo} como glosa.%0A%0AApenas verifiquemos tu pago te avisamos para que retires en el stand. ¡Gracias por tu compra!`;
   } else {
-    texto = `¡Hola!  Tu pago del pedido ${p.codigo} fue verificado.%0A%0APasa a retirar tus empanadas (Pino: ${p.cantidad_pino} · Queso: ${p.cantidad_queso}) en el stand de Guayacán, mostrando tu código: ${p.codigo}.%0A%0A¡Gracias por tu compra!`;
+    texto = `¡Hola! ✅ Tu pago del pedido ${p.codigo} fue verificado.%0A%0APasa a retirar tus empanadas (Pino: ${p.cantidad_pino} · Queso: ${p.cantidad_queso}) en el stand de Guayacán, mostrando tu código: ${p.codigo}.%0A%0A¡Gracias por tu compra!`;
   }
 
   window.open(`https://wa.me/${numero}?text=${texto}`, "_blank");
@@ -342,81 +342,21 @@ function imprimirVoucher(codigo){
     background: #fff !important;
   }
 
-  body {
+  body{
     width: 54mm !important;
     margin: 0 !important;
     padding: 2mm !important;
-
-    /* TIPOGRAFÍA */
     font-family: Arial, Helvetica, sans-serif !important;
-    font-size: 11px !important;
-    font-weight: 400 !important;
-    line-height: 1.35 !important;
-
-    /* COLOR MÁS SUAVE */
-    color: #444 !important;
+    font-size: 12px !important;
+    font-weight: 900 !important;
+    line-height: 1.3 !important;
+    color: #000 !important;
     background: #fff !important;
-
-    /* CONFIGURACIÓN DE IMPRESIÓN */
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-
-    /* QUITAR EFECTOS QUE ENGROSABAN LA LETRA */
-    -webkit-text-stroke: 0 !important;
-    text-shadow: none !important;
-}
-
-/* TÍTULOS */
-h1,
-h2,
-h3 {
-    font-family: Arial, Helvetica, sans-serif !important;
-    font-weight: 600 !important;
-    color: #222 !important;
-}
-
-/* TEXTOS EN NEGRITA */
-strong,
-b {
-    font-weight: 600 !important;
-    color: #222 !important;
-}
-
-/* TABLAS */
-table {
-    width: 100% !important;
-    border-collapse: collapse !important;
-    font-family: Arial, Helvetica, sans-serif !important;
-    font-size: 11px !important;
-    font-weight: 400 !important;
-    color: #444 !important;
-}
-
-/* CELDAS DE LAS TABLAS */
-td,
-th {
-    padding: 2px 1px !important;
-    font-weight: 400 !important;
-}
-
-/* ENCABEZADOS DE TABLAS */
-th {
-    font-weight: 600 !important;
-    color: #222 !important;
-}
-
-/* PÁRRAFOS */
-p {
-    margin: 2px 0 !important;
-    font-weight: 400 !important;
-}
-
-/* TOTAL O INFORMACIÓN DESTACADA */
-.total,
-.total strong {
-    font-weight: 600 !important;
-    color: #222 !important;
-}
+    -webkit-text-stroke: 0.4px #000;
+    text-shadow: 0.3px 0 0 currentColor, -0.3px 0 0 currentColor, 0 0.3px 0 currentColor, 0 -0.3px 0 currentColor;
+  }
 
   .centro{
     text-align: center;
