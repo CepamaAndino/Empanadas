@@ -114,6 +114,14 @@
   .caja-msg{text-align:center; font-size:13px; padding:10px; border-radius:10px; margin-top:10px;}
   .caja-msg.ok{background:#DFF3E5; color:var(--verde);}
   .caja-msg.error{background:#FBE0DE; color:var(--rojo);}
+
+  .caja-historial{max-width:700px; margin:24px auto 0;}
+  .caja-historial-header{display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;}
+  .caja-historial-header h3{margin:0; font-size:14px; color:var(--azul);}
+  .caja-historial-header button{
+    padding:7px 13px; border-radius:8px; border:none; background:var(--azul); color:#fff;
+    font-weight:700; font-size:12px; cursor:pointer;
+  }
 </style>
 </head>
 <body>
@@ -191,6 +199,14 @@
 
       <button class="btn-confirmar-venta" id="btnConfirmarVenta" disabled>Selecciona empanadas</button>
       <div id="cajaMsg" class="caja-msg hidden"></div>
+    </div>
+
+    <div class="caja-historial">
+      <div class="caja-historial-header">
+        <h3>Ventas registradas en caja</h3>
+        <button id="btnRefrescarCaja">🔄 Refrescar</button>
+      </div>
+      <div id="contenidoCaja" class="loading">Cargando ventas...</div>
     </div>
   </div>
 </main>
@@ -561,7 +577,49 @@ document.getElementById("tabCaja").onclick = () => {
   document.getElementById("vistaCaja").classList.remove("hidden");
   document.getElementById("vistaPedidos").classList.add("hidden");
   cajaRender();
+  cargarVentasCaja();
 };
+
+// ============ HISTORIAL VENTAS DE CAJA ============
+async function cargarVentasCaja(){
+  const cont = document.getElementById("contenidoCaja");
+  cont.innerHTML = '<div class="loading">Cargando ventas...</div>';
+  try{
+    const res = await fetch(API_URL + "?action=listar_caja");
+    const data = await res.json();
+    const ventas = data.ventas || [];
+
+    if(ventas.length === 0){
+      cont.innerHTML = '<div class="empty">Todavía no hay ventas registradas en caja.</div>';
+      return;
+    }
+
+    ventas.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+
+    let html = `<table><thead><tr>
+      <th>Código</th><th>Fecha</th><th>Hora</th><th>Pino</th><th>Queso</th><th>Total</th><th>Medio de pago</th><th>Vuelto</th>
+    </tr></thead><tbody>`;
+    ventas.forEach(v => {
+      const fechaTxt = v.fecha ? new Date(v.fecha).toLocaleDateString("es-CL") : "-";
+      html += `<tr>
+        <td><strong>${v.codigo}</strong></td>
+        <td>${fechaTxt}</td>
+        <td>${v.hora}</td>
+        <td>${v.cantidad_pino}</td>
+        <td>${v.cantidad_queso}</td>
+        <td>$${Number(v.total).toLocaleString("es-CL")}</td>
+        <td>${v.medio_pago}</td>
+        <td>${v.vuelto > 0 ? "$" + Number(v.vuelto).toLocaleString("es-CL") : "-"}</td>
+      </tr>`;
+    });
+    html += "</tbody></table>";
+    cont.innerHTML = html;
+  }catch(e){
+    cont.innerHTML = '<div class="empty">No se pudo conectar con el backend.</div>';
+  }
+}
+
+document.getElementById("btnRefrescarCaja").onclick = cargarVentasCaja;
 
 // ============ CAJA RÁPIDA ============
 const PRECIO_CAJA = 3500;
@@ -714,6 +772,7 @@ document.getElementById("btnConfirmarVenta").onclick = async () => {
     cajaBilleteSeleccionado = null;
     document.querySelectorAll(".billetes button").forEach(b => b.classList.remove("active"));
     cajaRender();
+    cargarVentasCaja();
 
   }catch(e){
     msg.textContent = "Error de conexión.";

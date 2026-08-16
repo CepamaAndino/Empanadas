@@ -78,14 +78,17 @@ empanadas-guayacan-2026/
   pino/queso, total pagado, y fecha/hora de la entrega. También se puede
   reimprimir después con el botón "🖨️ Reimprimir voucher".
 - **Reporte a Drive**: botón "Exportar reporte a Drive" en el admin genera un
-  CSV con todos los pedidos y lo guarda en la carpeta que configuraste.
+  CSV que combina **pedidos online y ventas de caja presencial** en un solo
+  archivo (columna "Origen" indica de cuál se trata), guardado en la carpeta
+  que configuraste.
 - **Caja rápida (venta presencial)**: pestaña "💵 Caja rápida" en `admin.html`
   para vender directo en el stand, del mismo stock. Elige pino/queso, calcula
   el total ($3.500 c/u), y para efectivo tiene botones "Exacto / $5.000 /
   $10.000 / $20.000" que calculan el vuelto solos. Cada venta queda guardada
   en una hoja nueva **"VentaPresencial"** dentro del mismo Sheet (se crea
   sola la primera vez), con código `CAJA-001`, fecha, hora, cantidades,
-  total, medio de pago, monto recibido y vuelto.
+  total, medio de pago, monto recibido y vuelto — y también queda visible en
+  una tabla ("Ventas registradas en caja") debajo del formulario de venta.
 
 ## Nota sobre el diseño
 

@@ -35,6 +35,9 @@ function doGet(e) {
   if (accion === "listar") {
     return jsonOut({ ok: true, pedidos: listarPedidos() });
   }
+  if (accion === "listar_caja") {
+    return jsonOut({ ok: true, ventas: listarVentasPresenciales() });
+  }
   return jsonOut({ ok: false, mensaje: "Acción no reconocida" });
 }
 
@@ -280,16 +283,45 @@ function listarPedidos() {
   return out;
 }
 
+function listarVentasPresenciales() {
+  const sh = getOrCreateSheet("VentaPresencial", HEADERS_CAJA);
+  const data = sh.getDataRange().getValues();
+  const out = [];
+  for (let i = 1; i < data.length; i++) {
+    out.push({
+      codigo: data[i][0],
+      fecha: data[i][1],
+      hora: data[i][2],
+      cantidad_pino: data[i][3],
+      cantidad_queso: data[i][4],
+      total: data[i][5],
+      medio_pago: data[i][6],
+      monto_recibido: data[i][7],
+      vuelto: data[i][8]
+    });
+  }
+  return out;
+}
+
 /**
- * Genera un CSV con todos los pedidos y lo guarda en Drive.
- * Se llama desde el panel de administración (botón "Exportar reporte a Drive").
+ * Genera un CSV con todos los pedidos online Y las ventas de caja presencial,
+ * y lo guarda en Drive. Se llama desde el panel de administración
+ * (botón "Exportar reporte a Drive").
  */
 function exportarReporteDrive() {
   const pedidos = listarPedidos();
-  let csv = "Codigo,Fecha,Etapa,Alumno,Curso,WhatsApp,Correo,CantPino,CantQueso,Total,Estado\n";
+  const ventasCaja = listarVentasPresenciales();
+
+  let csv = "Codigo,Fecha,Origen,Etapa,Alumno,Curso,WhatsApp,Correo,CantPino,CantQueso,Total,Estado,MedioPago,Vuelto\n";
+
   pedidos.forEach(p => {
-    csv += [p.codigo, p.fecha, p.etapa, p.nombre, p.curso, p.whatsapp, p.correo, p.cantidad_pino, p.cantidad_queso, p.total, p.estado]
+    csv += [p.codigo, p.fecha, "Pedido online", p.etapa, p.nombre, p.curso, p.whatsapp, p.correo, p.cantidad_pino, p.cantidad_queso, p.total, p.estado, "", ""]
       .map(v => '"' + String(v).replace(/"/g, '""') + '"').join(",") + "\n";
+  });
+
+  ventasCaja.forEach(v => {
+    csv += [v.codigo, v.fecha, "Caja presencial", "", "", "", "", "", v.cantidad_pino, v.cantidad_queso, v.total, "Completada", v.medio_pago, v.vuelto]
+      .map(val => '"' + String(val).replace(/"/g, '""') + '"').join(",") + "\n";
   });
 
   const nombreArchivo = "Reporte Empanadas Guayacan 2026 - " + Utilities.formatDate(new Date(), "GMT-4", "yyyy-MM-dd HH.mm") + ".csv";
