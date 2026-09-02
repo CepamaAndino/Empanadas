@@ -195,6 +195,7 @@
   .btn-wsp{border-color:#25D366; color:#128C3B;}
   .btn-copiar{border-color:#F6C453; color:#8A6100; background:#FFFBF0;}
   .btn-copiar.copiado{background:#DFF3E5; border-color:#1C8A4A; color:#1C8A4A;}
+  .hint-copiar{font-size:11px; color:#999; text-align:center; margin:4px 0 0;}
 
   .aviso-importante{
     background:#FDE8E7; border:1.5px solid var(--rojo); border-radius:10px;
@@ -329,9 +330,10 @@
       <div class="num" id="bankMontoGrande">$0</div>
     </div>
 
-    <button class="btn-secondary btn-copiar" id="btnCopiar">📋 Copiar datos de transferencia</button>
+    <button class="btn-secondary btn-copiar" id="btnCopiar">📋 Copiar datos del destinatario</button>
+    <p class="hint-copiar">Cópialo para agregar a Patricia Bravo como destinatario en tu app bancaria.</p>
 
-    <div class="aviso-importante">⚠️ Importante: pon el código como <strong>comentario</strong> de la transferencia para que podamos verificarla más rápido.</div>
+    <div class="aviso-importante">⚠️ Importante: al transferir, escribe el <strong>monto exacto</strong> y pon el código como <strong>comentario</strong> — esos datos van aparte, no en el formulario de "agregar destinatario".</div>
 
     <div class="gracias-box">
       <div class="gracias-emoji">🎉</div>
@@ -524,13 +526,14 @@ el("btnNuevo").onclick = () => {
 };
 
 function copiarDatosTransferencia(codigo, total){
+  // Solo datos del destinatario: el monto y el comentario se escriben a mano
+  // en el paso de "transferir" de tu app bancaria (no en "agregar destinatario"),
+  // para que el parser de "Pegar datos copiados" del banco no los mezcle.
   const texto =
-`Banco: Banco de Chile
+`Nombre: Patricia Bravo
+Banco: Banco de Chile
 Tipo de cuenta: Cuenta Vista
-N° de cuenta: 00-075-84210-95
-A nombre de: Patricia Bravo
-Monto: $${total.toLocaleString("es-CL")}
-Comentario: ${codigo}`;
+N° de cuenta: 00-075-84210-95`;
 
   const btn = el("btnCopiar");
   const original = btn.textContent;
