@@ -196,6 +196,20 @@
   .btn-copiar{border-color:#F6C453; color:#8A6100; background:#FFFBF0;}
   .btn-copiar.copiado{background:#DFF3E5; border-color:#1C8A4A; color:#1C8A4A;}
 
+  .aviso-importante{
+    background:#FDE8E7; border:1.5px solid var(--rojo); border-radius:10px;
+    color:var(--rojo); font-size:12.5px; font-weight:600; text-align:center;
+    padding:10px 12px; margin-top:12px; line-height:1.4;
+  }
+
+  .gracias-box{
+    background:linear-gradient(135deg, #EEF2FF, #FBF7EF); border:1.5px dashed var(--azul-2);
+    border-radius:14px; padding:18px; text-align:center; margin-top:14px;
+  }
+  .gracias-emoji{font-size:30px; line-height:1;}
+  .gracias-txt{font-family:'Anton'; font-size:18px; color:var(--azul); margin:4px 0 12px;}
+  .btn-descargar{border-color:var(--azul); color:var(--azul); background:#fff; margin-top:0;}
+
   .status-msg{font-size:13px; text-align:center; padding:10px; border-radius:10px; margin-top:10px;}
   .status-msg.pending{background:#FFF6E0; color:#8A6100;}
   .status-msg.error{background:#FDE8E7; color:var(--rojo);}
@@ -225,7 +239,7 @@
   <div class="eyebrow">Colegio Andino Montessori</div>
   <h1 class="stamp">Venta de<br>Empanadas</h1>
   <div class="accent-script">Guayacán 2026</div>
-  <p class="sub">Pino y Queso hechas con cariño por nuestra comunidad. Elige tus empanadas, transfiere y recibe tu comprobante con código de compra.</p>
+  <p class="sub">Pino y queso hechas con cariño por nuestra comunidad. Elige tus empanadas, transfiere y recibe tu comprobante con código de compra.</p>
 
   <div class="stage-toggle">
     <button type="button" id="btnPreventa" class="active">Preventa</button>
@@ -280,10 +294,10 @@
 
   <div class="card" id="formCard">
     <label for="nombre">Nombre del alumno/a</label>
-    <input id="nombre" type="text" placeholder="Ej: Mia Rodriguez">
+    <input id="nombre" type="text" placeholder="Ej: Emilia Alvarado">
 
     <label for="curso">Curso</label>
-    <input id="curso" type="text" placeholder="Ej: Taller 1 Boldo">
+    <input id="curso" type="text" placeholder="Ej: Taller 2 Guayacán">
 
     <label for="whatsapp">WhatsApp del apoderado</label>
     <input id="whatsapp" type="tel" placeholder="+569 1234 5678">
@@ -307,7 +321,7 @@
       <div class="bank-row"><span>Tipo de cuenta</span><span>Cuenta Vista</span></div>
       <div class="bank-row"><span>N° de cuenta</span><span>00-075-84210-95</span></div>
       <div class="bank-row"><span>A nombre de</span><span>Patricia Bravo</span></div>
-      <div class="bank-row" style="border-bottom:none;"><span>Glosa / asunto</span><span id="bankGlosa">EMP-000</span></div>
+      <div class="bank-row" style="border-bottom:none;"><span>Comentario</span><span id="bankGlosa">EMP-000</span></div>
     </div>
 
     <div class="monto-box">
@@ -317,7 +331,13 @@
 
     <button class="btn-secondary btn-copiar" id="btnCopiar">📋 Copiar datos de transferencia</button>
 
-    <p style="font-size:12.5px;color:#777;text-align:center;">Importante: pon el código como comentario de la transferencia para que podamos verificarla más rápido.</p>
+    <div class="aviso-importante">⚠️ Importante: pon el código como <strong>comentario</strong> de la transferencia para que podamos verificarla más rápido.</div>
+
+    <div class="gracias-box">
+      <div class="gracias-emoji">🎉</div>
+      <div class="gracias-txt">¡Gracias por tu compra!</div>
+      <button class="btn-secondary btn-descargar" id="btnDescargarComprobante">⬇️ Descargar comprobante</button>
+    </div>
 
     <button class="btn-secondary" id="btnNuevo">Hacer otro pedido</button>
     <p style="font-size:11.5px;color:#999;text-align:center;margin-top:10px;">Te avisaremos por WhatsApp apenas verifiquemos tu transferencia. Con eso podrás retirar tus empanadas en el stand.</p>
@@ -470,6 +490,16 @@ el("btnGenerar").onclick = async () => {
 
     el("btnCopiar").onclick = () => copiarDatosTransferencia(data.codigo, total);
 
+    ultimoPedido = {
+      codigo: data.codigo,
+      nombre: nombre,
+      curso: curso,
+      cantidad_pino: qty.pino,
+      cantidad_queso: qty.queso,
+      total: total
+    };
+    el("btnDescargarComprobante").onclick = () => descargarComprobante(ultimoPedido);
+
     el("tiendaCard").classList.add("hidden");
     el("formCard").classList.add("hidden");
     el("confirmCard").classList.remove("hidden");
@@ -500,7 +530,7 @@ Tipo de cuenta: Cuenta Vista
 N° de cuenta: 00-075-84210-95
 A nombre de: Patricia Bravo
 Monto: $${total.toLocaleString("es-CL")}
-Glosa / asunto: ${codigo}`;
+Comentario: ${codigo}`;
 
   const btn = el("btnCopiar");
   const original = btn.textContent;
@@ -527,6 +557,152 @@ function copiarConFallback(texto, onOk){
   area.select();
   try{ document.execCommand("copy"); onOk(); }catch(e){ alert("No se pudo copiar automático, copia los datos manualmente."); }
   document.body.removeChild(area);
+}
+
+let ultimoPedido = null;
+
+function dibujarRectRedondeado(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function dibujarLinea(ctx, x1, x2, y, punteada){
+  ctx.save();
+  ctx.strokeStyle = punteada ? "#B9B0A0" : "#1B1D22";
+  ctx.lineWidth = punteada ? 1.5 : 2;
+  if(punteada) ctx.setLineDash([2, 4]);
+  ctx.beginPath();
+  ctx.moveTo(x1, y);
+  ctx.lineTo(x2, y);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function descargarComprobante(pedido){
+  const lineas = [];
+  if(Number(pedido.cantidad_pino) > 0) lineas.push({ nombre: "Empanada Pino", cant: pedido.cantidad_pino, monto: pedido.cantidad_pino * PRECIO });
+  if(Number(pedido.cantidad_queso) > 0) lineas.push({ nombre: "Empanada Queso", cant: pedido.cantidad_queso, monto: pedido.cantidad_queso * PRECIO });
+
+  const width = 520;
+  const height = 640 + lineas.length * 30;
+  const escala = 2;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = width * escala;
+  canvas.height = height * escala;
+  const ctx = canvas.getContext("2d");
+  ctx.scale(escala, escala);
+
+  // fondo
+  ctx.fillStyle = "#FBF7EF";
+  ctx.fillRect(0, 0, width, height);
+
+  // encabezado azul
+  ctx.fillStyle = "#0B2A5B";
+  ctx.fillRect(0, 0, width, 120);
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "800 30px Arial, sans-serif";
+  ctx.fillText("GUAYACÁN", width / 2, 52);
+  ctx.font = "700 14px Arial, sans-serif";
+  ctx.fillStyle = "#F6C453";
+  ctx.fillText("— EMPANADAS 2026 —", width / 2, 76);
+  ctx.font = "600 12px Arial, sans-serif";
+  ctx.fillStyle = "#CFE0FF";
+  ctx.fillText("Comprobante de pedido", width / 2, 98);
+
+  let y = 155;
+
+  // insignia del código
+  ctx.font = "800 19px Arial, sans-serif";
+  const anchoTexto = ctx.measureText(pedido.codigo).width;
+  const badgeW = anchoTexto + 56;
+  const badgeH = 40;
+  ctx.fillStyle = "#0B2A5B";
+  dibujarRectRedondeado(ctx, width / 2 - badgeW / 2, y - 27, badgeW, badgeH, 20);
+  ctx.fill();
+  ctx.fillStyle = "#ffffff";
+  ctx.fillText(pedido.codigo, width / 2, y);
+
+  y += 50;
+  ctx.textAlign = "left";
+  ctx.fillStyle = "#1B1D22";
+  ctx.font = "700 14px Arial, sans-serif";
+  ctx.fillText("Alumno/a", 40, y);
+  ctx.font = "500 14px Arial, sans-serif";
+  ctx.fillText(pedido.nombre, 40, y + 20);
+
+  y += 48;
+  ctx.font = "700 14px Arial, sans-serif";
+  ctx.fillText("Curso", 40, y);
+  ctx.font = "500 14px Arial, sans-serif";
+  ctx.fillText(pedido.curso, 40, y + 20);
+
+  y += 42;
+  dibujarLinea(ctx, 40, width - 40, y, true);
+  y += 30;
+
+  lineas.forEach(l => {
+    ctx.textAlign = "left";
+    ctx.font = "500 14px Arial, sans-serif";
+    ctx.fillText(`${l.nombre} x${l.cant}`, 40, y);
+    ctx.textAlign = "right";
+    ctx.font = "700 14px Arial, sans-serif";
+    ctx.fillText("$" + l.monto.toLocaleString("es-CL"), width - 40, y);
+    y += 30;
+  });
+
+  dibujarLinea(ctx, 40, width - 40, y, false);
+  y += 34;
+
+  ctx.textAlign = "left";
+  ctx.font = "800 16px Arial, sans-serif";
+  ctx.fillText("TOTAL", 40, y);
+  ctx.textAlign = "right";
+  ctx.font = "800 19px Arial, sans-serif";
+  ctx.fillText("$" + Number(pedido.total).toLocaleString("es-CL"), width - 40, y);
+
+  y += 30;
+  dibujarLinea(ctx, 40, width - 40, y, false);
+  y += 40;
+
+  // aviso: sujeto a verificación de pago
+  const avisoH = 50;
+  ctx.fillStyle = "#FDE8E7";
+  dibujarRectRedondeado(ctx, 30, y - avisoH / 2 - 6, width - 60, avisoH, 12);
+  ctx.fill();
+  ctx.strokeStyle = "#D52B1E";
+  ctx.lineWidth = 1.5;
+  dibujarRectRedondeado(ctx, 30, y - avisoH / 2 - 6, width - 60, avisoH, 12);
+  ctx.stroke();
+  ctx.fillStyle = "#D52B1E";
+  ctx.textAlign = "center";
+  ctx.font = "700 14px Arial, sans-serif";
+  ctx.fillText("⚠️ Sujeto a verificación de pago", width / 2, y + 4);
+
+  y += avisoH + 10;
+  const ahora = new Date();
+  ctx.fillStyle = "#888";
+  ctx.font = "500 11.5px Arial, sans-serif";
+  ctx.fillText(
+    "Generado el " + ahora.toLocaleDateString("es-CL") + " a las " + ahora.toLocaleTimeString("es-CL", { hour: "2-digit", minute: "2-digit" }),
+    width / 2, y
+  );
+
+  y += 22;
+  ctx.font = "600 11.5px Arial, sans-serif";
+  ctx.fillStyle = "#555";
+  ctx.fillText("Te avisaremos por WhatsApp cuando se verifique tu pago.", width / 2, y);
+
+  const link = document.createElement("a");
+  link.download = `comprobante-${pedido.codigo}.png`;
+  link.href = canvas.toDataURL("image/png");
+  link.click();
 }
 
 render();
