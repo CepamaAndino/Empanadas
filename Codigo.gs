@@ -57,6 +57,7 @@ function doPost(e) {
     if (body.action === "rechazar_pago") return rechazarPago(body);
     if (body.action === "marcar_entregado") return marcarEntregado(body);
     if (body.action === "venta_presencial") return ventaPresencial(body);
+    if (body.action === "guardar_comprobante") return guardarComprobante(body);
     if (body.action === "exportar_reporte") return exportarReporteDrive();
     return jsonOut({ ok: false, mensaje: "Acción no reconocida" });
   } finally {
@@ -157,6 +158,46 @@ function buscarFilaPorCodigo(codigo) {
     if (data[i][0] === codigo) return { fila: i + 1, datos: data[i] };
   }
   return null;
+}
+
+/**
+ * Se asegura de que la columna L de la hoja "Pedidos" exista con el
+ * encabezado "ComprobanteURL" (se crea sola la primera vez, sin que
+ * tengas que tocar tu Sheet a mano).
+ */
+function asegurarColumnaComprobante() {
+  const sh = getSheet("Pedidos");
+  const encabezado = sh.getRange(1, 12).getValue();
+  if (encabezado !== "ComprobanteURL") {
+    sh.getRange(1, 12).setValue("ComprobanteURL");
+  }
+  return sh;
+}
+
+/**
+ * Recibe la imagen del comprobante (generada en el navegador del apoderado
+ * apenas se confirma el pedido) en base64, la guarda como archivo en Drive,
+ * y deja el link guardado en la fila del pedido para poder reenviarlo
+ * después desde el panel admin.
+ */
+function guardarComprobante(body) {
+  const encontrado = buscarFilaPorCodigo(body.codigo);
+  if (!encontrado) return jsonOut({ ok: false, mensaje: "Pedido no encontrado." });
+
+  try {
+    const bytes = Utilities.base64Decode(body.imagen_base64);
+    const blob = Utilities.newBlob(bytes, "image/png", "comprobante-" + body.codigo + ".png");
+    const carpeta = CARPETA_DRIVE_ID ? DriveApp.getFolderById(CARPETA_DRIVE_ID) : DriveApp.getRootFolder();
+    const archivo = carpeta.createFile(blob);
+    archivo.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+
+    const sh = asegurarColumnaComprobante();
+    sh.getRange(encontrado.fila, 12).setValue(archivo.getUrl());
+
+    return jsonOut({ ok: true, url: archivo.getUrl() });
+  } catch (err) {
+    return jsonOut({ ok: false, mensaje: "No se pudo guardar el comprobante: " + err.message });
+  }
 }
 
 function verificarPago(body) {
@@ -277,7 +318,8 @@ function listarPedidos() {
       cantidad_pino: data[i][7],
       cantidad_queso: data[i][8],
       total: data[i][9],
-      estado: data[i][10]
+      estado: data[i][10],
+      comprobante_url: data[i][11] || ""
     });
   }
   return out;

@@ -89,6 +89,15 @@ empanadas-guayacan-2026/
   sola la primera vez), con código `CAJA-001`, fecha, hora, cantidades,
   total, medio de pago, monto recibido y vuelto — y también queda visible en
   una tabla ("Ventas registradas en caja") debajo del formulario de venta.
+- **Comprobante descargable**: apenas se confirma un pedido, la tienda
+  genera una imagen del comprobante (con canvas, sin librerías externas) y
+  la manda automático al backend, que la guarda en Drive y deja el link en
+  la columna "ComprobanteURL" (se crea sola) de la hoja "Pedidos". Desde
+  `admin.html` cada pedido tiene un link "📄 Comprobante" para abrirlo o
+  reenviarlo cuando haga falta. El apoderado además puede descargar su
+  propia copia con el botón "⬇️ Descargar comprobante" — usa Web Share API
+  cuando está disponible (para "Guardar imagen" nativo en el celular) y si
+  no, descarga por link y abre la imagen en una pestaña nueva como respaldo.
 
 ## Nota sobre el diseño
 

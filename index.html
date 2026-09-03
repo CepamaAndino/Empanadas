@@ -322,6 +322,7 @@
       <div class="bank-row"><span>Tipo de cuenta</span><span>Cuenta Vista</span></div>
       <div class="bank-row"><span>N° de cuenta</span><span>00-075-84210-95</span></div>
       <div class="bank-row"><span>A nombre de</span><span>Patricia Bravo</span></div>
+      <div class="bank-row"><span>RUT</span><span>16.859.492-5</span></div>
       <div class="bank-row" style="border-bottom:none;"><span>Comentario</span><span id="bankGlosa">EMP-000</span></div>
     </div>
 
@@ -501,6 +502,7 @@ el("btnGenerar").onclick = async () => {
       total: total
     };
     el("btnDescargarComprobante").onclick = () => descargarComprobante(ultimoPedido);
+    enviarComprobanteAlBackend(ultimoPedido);
 
     el("tiendaCard").classList.add("hidden");
     el("formCard").classList.add("hidden");
@@ -531,6 +533,7 @@ function copiarDatosTransferencia(codigo, total){
   // para que el parser de "Pegar datos copiados" del banco no los mezcle.
   const texto =
 `Nombre: Patricia Bravo
+RUT: 16.859.492-5
 Banco: Banco de Chile
 Tipo de cuenta: Cuenta Vista
 N° de cuenta: 00-075-84210-95`;
@@ -586,7 +589,7 @@ function dibujarLinea(ctx, x1, x2, y, punteada){
   ctx.restore();
 }
 
-function descargarComprobante(pedido){
+function generarCanvasComprobante(pedido){
   const lineas = [];
   if(Number(pedido.cantidad_pino) > 0) lineas.push({ nombre: "Empanada Pino", cant: pedido.cantidad_pino, monto: pedido.cantidad_pino * PRECIO });
   if(Number(pedido.cantidad_queso) > 0) lineas.push({ nombre: "Empanada Queso", cant: pedido.cantidad_queso, monto: pedido.cantidad_queso * PRECIO });
@@ -702,10 +705,53 @@ function descargarComprobante(pedido){
   ctx.fillStyle = "#555";
   ctx.fillText("Te avisaremos por WhatsApp cuando se verifique tu pago.", width / 2, y);
 
-  const link = document.createElement("a");
-  link.download = `comprobante-${pedido.codigo}.png`;
-  link.href = canvas.toDataURL("image/png");
-  link.click();
+  return canvas;
+}
+
+async function descargarComprobante(pedido){
+  const canvas = generarCanvasComprobante(pedido);
+  const nombreArchivo = `comprobante-${pedido.codigo}.png`;
+
+  canvas.toBlob(async (blob) => {
+    if(!blob){
+      alert("No se pudo generar el comprobante. Intenta de nuevo.");
+      return;
+    }
+
+    // en celulares, usar el share nativo (deja "Guardar imagen" directo)
+    try{
+      const archivo = new File([blob], nombreArchivo, { type: "image/png" });
+      if(navigator.canShare && navigator.canShare({ files: [archivo] })){
+        await navigator.share({ files: [archivo], title: nombreArchivo });
+        return;
+      }
+    }catch(e){ /* si cancela o falla el share, seguimos con el plan B */ }
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.download = nombreArchivo;
+    link.href = url;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // respaldo universal: abre la imagen en una pestaña nueva para
+    // que se pueda guardar a mano (mantener presionado) si la descarga
+    // automática no funcionó en ese navegador
+    setTimeout(() => { window.open(url, "_blank"); }, 350);
+  }, "image/png");
+}
+
+function enviarComprobanteAlBackend(pedido){
+  try{
+    const canvas = generarCanvasComprobante(pedido);
+    const dataUrl = canvas.toDataURL("image/png");
+    const base64 = dataUrl.split(",")[1];
+    fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({ action: "guardar_comprobante", codigo: pedido.codigo, imagen_base64: base64 })
+    }).catch(() => { /* si falla, no bloquea al apoderado; queda igual el botón de descarga manual */ });
+  }catch(e){ /* no interrumpir el flujo de compra por esto */ }
 }
 
 render();
